@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { dummyImages } from './dummy/images'
+import { chainChanged, getMetamask } from './connector'
 
 function App() {
-  useEffect(() => {
-    console.log(dummyImages)
-  }, [])
+  const openMetamask = () => {
+    getMetamask()
+  }
+
+  chainChanged((data) => {
+    console.log(data)
+  })
 
   return (
     <div className="App">
@@ -19,6 +22,8 @@ function App() {
           Learn React
         </a>
       </header>
+      <h1>Test Metamask</h1>
+      <button onClick={openMetamask}>connect</button>
     </div>
   )
 }
