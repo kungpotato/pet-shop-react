@@ -25,7 +25,7 @@ declare global {
   }
 }
 
-export const getMetamask = async () => {
+export const getMetamask = async (): Promise<string[]> => {
   if (typeof window.ethereum !== 'undefined') {
     const { ethereum } = window
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
@@ -34,7 +34,7 @@ export const getMetamask = async () => {
   return []
 }
 
-export const chainChanged = (callback?: (chainId: number) => void) => {
+export const chainChanged = (callback?: (chainId: number) => void): void => {
   if (typeof window.ethereum !== 'undefined') {
     const { ethereum } = window
     ethereum.on('chainChanged', (data) => {

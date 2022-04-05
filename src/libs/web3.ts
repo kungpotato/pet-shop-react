@@ -1,7 +1,7 @@
 import { Contract } from 'web3-eth-contract'
 import Web3 from 'web3'
 
-export const getWeb3Contract = async (contractDefinition: any): Promise<Contract | null> => {
+export const getWeb3Contract = async (contractDefinition: Record<string,any>): Promise<Contract | null> => {
   if (typeof window.ethereum !== 'undefined') {
     const { ethereum } = window
     const provider = new Web3(ethereum as any)

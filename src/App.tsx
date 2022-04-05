@@ -4,9 +4,10 @@ import { getEtherContract } from './libs/ethereum'
 import Adoption from './abis/Adoption.json'
 import { getWeb3Contract } from './libs/web3'
 
-function App() {
+function App(): JSX.Element {
   const getMetamaskAccount = async () => {
     const accounts = await getMetamask()
+    console.log({ accounts })
     return accounts
   }
 
