@@ -1,6 +1,6 @@
 interface RequestArguments {
   method: 'eth_requestAccounts' | 'chainChanged'
-  params?: unknown[] | object
+  params?: unknown[] | Record<string, unknown>
 }
 
 interface ConnectInfo {

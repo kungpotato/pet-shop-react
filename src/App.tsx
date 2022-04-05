@@ -1,17 +1,24 @@
 import './App.css'
-import { chainChanged, getMetamask } from './metamask'
-import { getEtherContract } from './ethereum'
+import { chainChanged, getMetamask } from './libs/metamask'
+import { getEtherContract } from './libs/ethereum'
 import Adoption from './abis/Adoption.json'
+import { getWeb3Contract } from './libs/web3'
 
 function App() {
   const getMetamaskAccount = async () => {
-    let count = 0
     const accounts = await getMetamask()
-    const contract = await getEtherContract(Adoption)
-    await contract?.adopt(count)
+    return accounts
+  }
+
+  async function adopt() {
+    let count = 0
+    const accounts = await getMetamaskAccount()
+    // const contract = await getEtherContract(Adoption)
+    const contract = await getWeb3Contract(Adoption)
+    await contract?.methods.adopt(count).send({ from: accounts[0] })
     count += 1
     // Get the value from the contract to prove it worked.
-    const response = await contract?.getAdopters()
+    const response = await contract?.methods.getAdopters().call()
     console.log({ response })
   }
 
@@ -23,6 +30,7 @@ function App() {
     <div className="App">
       <h1>Test Metamask</h1>
       <button onClick={getMetamaskAccount}>connect</button>
+      <button onClick={adopt}>adopt</button>
     </div>
   )
 }
