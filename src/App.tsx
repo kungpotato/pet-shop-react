@@ -3,8 +3,10 @@ import { chainChanged, getMetamask } from './libs/metamask'
 // import { getEtherContract } from './libs/ethereum'
 import Adoption from './abis/Adoption.json'
 import { getWeb3Contract } from './libs/web3'
+import { ContractContext } from './contract-type/Adoption'
 
 function App(): JSX.Element {
+  let count = 0
   const getMetamaskAccount = async () => {
     const accounts = await getMetamask()
     console.log({ accounts })
@@ -12,12 +14,13 @@ function App(): JSX.Element {
   }
 
   async function adopt() {
-    let count = 0
     const accounts = await getMetamaskAccount()
     // const contract = await getEtherContract(Adoption)
-    const contract = await getWeb3Contract(Adoption)
-    await contract?.methods.adopt(count).send({ from: accounts[0] })
+    const contract = (await getWeb3Contract(Adoption)) as unknown as ContractContext
+    await contract?.methods.adopt(count.toString()).send({ from: accounts[0] })
     count += 1
+    console.log(count)
+
     // Get the value from the contract to prove it worked.
     const response = await contract?.methods.getAdopters().call()
     console.log({ response })

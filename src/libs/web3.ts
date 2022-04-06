@@ -1,7 +1,11 @@
-import { Contract } from 'web3-eth-contract'
+import { Contract, EventData } from 'web3-eth-contract'
 import Web3 from 'web3'
 
-export const getWeb3Contract = async (contractDefinition: Record<string,any>): Promise<Contract | null> => {
+export enum contractEvent {
+  Log = 'Log'
+}
+
+export const getWeb3Contract = async (contractDefinition: Record<string, any>): Promise<Contract | null> => {
   if (typeof window.ethereum !== 'undefined') {
     const { ethereum } = window
     const provider = new Web3(ethereum as any)
@@ -13,4 +17,15 @@ export const getWeb3Contract = async (contractDefinition: Record<string,any>): P
     return contract
   }
   return null
+}
+
+export const getContractEvent = (contract: Contract, event: contractEvent): Promise<EventData[]> => {
+  const options = {
+    filter: {
+      value: []
+    },
+    fromBlock: 0, //Number || "earliest" || "pending" || "latest"
+    toBlock: 'latest'
+  }
+  return contract.getPastEvents(event, options)
 }
