@@ -2,7 +2,7 @@ import './App.css'
 import { chainChanged, getMetamask } from './libs/metamask'
 // import { getEtherContract } from './libs/ethereum'
 import Adoption from './abis/Adoption.json'
-import { getWeb3Contract } from './libs/web3'
+import { contractEvent, getContractEvent, getWeb3Contract } from './libs/web3'
 import { ContractContext } from './contract-type/Adoption'
 
 enum contractAddress {
@@ -28,6 +28,9 @@ function App(): JSX.Element {
     // Get the value from the contract to prove it worked.
     const response = await contract?.methods.getAdopters().call()
     console.log({ response })
+
+    const events = await getContractEvent(contract as any, contractEvent.Log)
+    console.log({ events })
   }
 
   chainChanged((data) => {

@@ -19,6 +19,7 @@ export const getWeb3Contract = async (
       contractDefinition['abi'],
       contractDefinition.networks[networkId]?.address ?? address
     )
+
     return contract
   }
   return null
