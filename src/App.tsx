@@ -1,6 +1,6 @@
 import './App.css'
 import { chainChanged, getMetamask } from './libs/metamask'
-import { getEtherContract } from './libs/ethereum'
+// import { getEtherContract } from './libs/ethereum'
 import Adoption from './abis/Adoption.json'
 import { getWeb3Contract } from './libs/web3'
 
