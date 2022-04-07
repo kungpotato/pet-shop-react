@@ -1,7 +1,7 @@
 import './App.css'
 import { chainChanged, getMetamask } from './libs/metamask'
 // import { getEtherContract } from './libs/ethereum'
-import Adoption from './abis/Adoption.json'
+import Adoption from './definition/Adoption.json'
 import { contractEvent, getContractEvent, getWeb3Contract } from './libs/web3'
 import { ContractContext } from './contract-type/Adoption'
 

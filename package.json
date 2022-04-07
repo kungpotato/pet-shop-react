@@ -25,6 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --config ./.prettierrc --write {,*/**/}*.{ts,tsx,json}",
+    "complie":"truffle complie",
     "gen-type": "abi-types-generator './src/abis/Adoption.json' --output='./src/contract-type' --name=Adoption"
   },
   "eslintConfig": {
