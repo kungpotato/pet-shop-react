@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    ethereum?: EthereumProvider
+  }
+}
+
 interface RequestArguments {
   method: 'eth_requestAccounts' | 'chainChanged'
   params?: unknown[] | Record<string, unknown>
@@ -17,12 +23,6 @@ type eventResult<T extends keyof eventMap> = T extends string ? string : Connect
 export interface EthereumProvider {
   request(args: RequestArguments): Promise<string[]>
   on: <T extends keyof eventMap>(event: keyof eventMap, handler: (data: eventResult<T>) => void) => void
-}
-
-declare global {
-  interface Window {
-    ethereum?: EthereumProvider
-  }
 }
 
 export const getMetamask = async (): Promise<string[]> => {

@@ -2,7 +2,7 @@ import './App.css'
 import { chainChanged, getMetamask } from './libs/metamask'
 // import { getEtherContract } from './libs/ethereum'
 import Adoption from './definition/Adoption.json'
-import { contractEvent, getContractEvent, getWeb3Contract } from './libs/web3'
+import { contractEvent, getChainId, getContractEvent, getWeb3Contract } from './libs/web3'
 import { ContractContext } from './contract-type/Adoption'
 
 enum contractAddress {
@@ -14,6 +14,13 @@ function App(): JSX.Element {
   const getMetamaskAccount = async () => {
     const accounts = await getMetamask()
     console.log({ accounts })
+
+    const chainId = await getChainId()
+    console.log({ chainId })
+    if (chainId !== 5777) {
+      alert('incurrect chain')
+    }
+
     return accounts
   }
 
@@ -33,8 +40,14 @@ function App(): JSX.Element {
     console.log({ events })
   }
 
-  chainChanged((data) => {
+  chainChanged(async (data) => {
     console.log(data)
+    const chainId = await getChainId()
+    console.log({ chainId })
+
+    if (chainId !== 5777) {
+      alert('incurrect chain')
+    }
   })
 
   return (

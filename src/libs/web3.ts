@@ -5,21 +5,31 @@ export enum contractEvent {
   Log = 'Log'
 }
 
+export const getWeb3Provider = async (): Promise<Web3 | null> => {
+  if (typeof window.ethereum !== 'undefined') {
+    const { ethereum } = window
+    return new Web3(ethereum as any)
+  }
+  return null
+}
+
+export const getChainId = async (): Promise<number | undefined> => {
+  const provider = await getWeb3Provider()
+  return provider?.eth.net.getId()
+}
+
 export const getWeb3Contract = async (
   contractDefinition: Record<string, any>,
   address: string
 ): Promise<Contract | null> => {
-  if (typeof window.ethereum !== 'undefined') {
-    const { ethereum } = window
-    const provider = new Web3(ethereum as any)
+  const provider = await getWeb3Provider()
+  const networkId = await getChainId()
 
-    const networkId = await provider.eth.net.getId()
-
+  if (provider && networkId) {
     const contract = new provider.eth.Contract(
       contractDefinition['abi'],
       contractDefinition.networks[networkId]?.address ?? address
     )
-
     return contract
   }
   return null
