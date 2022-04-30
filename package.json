@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^14.1.1",
@@ -25,8 +26,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --config ./.prettierrc --write {,*/**/}*.{ts,tsx,json}",
-    "complie":"truffle complie",
-    "gen-type": "abi-types-generator './src/abis/Adoption.json' --output='./src/contract-type' --name=Adoption"
+    "complie": "truffle complie",
+    "migrate":"truffle migrate",
+    "migrate-reset":"truffle migrate --reset",
+    "gen-type": "abi-types-generator './src/definition/PotatoMarket.json' --output='./src/contract-type' --name=PotatoMarket"
   },
   "eslintConfig": {
     "extends": [
