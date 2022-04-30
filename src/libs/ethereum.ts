@@ -8,7 +8,7 @@ export const getEtherContract = async (contractDefinition: Record<string,any>): 
     const network = await provider.getNetwork()
 
     const daiAddress =
-      contractDefinition.networks[network.chainId]?.address ?? '0x2d9a564488f2f6fb5f59f3bF2dd8849194509Ee4'
+      contractDefinition.networks[network.chainId]?.address
     const signer = provider.getSigner()
     const contract = new ethers.Contract(daiAddress, contractDefinition['abi'], signer)
     return contract

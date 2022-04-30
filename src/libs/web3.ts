@@ -19,8 +19,7 @@ export const getChainId = async (): Promise<number | undefined> => {
 }
 
 export const getWeb3Contract = async (
-  contractDefinition: Record<string, any>,
-  address: string
+  contractDefinition: Record<string, any>
 ): Promise<Contract | null> => {
   const provider = await getWeb3Provider()
   const networkId = await getChainId()
@@ -28,7 +27,7 @@ export const getWeb3Contract = async (
   if (provider && networkId) {
     const contract = new provider.eth.Contract(
       contractDefinition['abi'],
-      contractDefinition.networks[networkId]?.address ?? address
+      contractDefinition.networks[networkId]?.address
     )
     return contract
   }
