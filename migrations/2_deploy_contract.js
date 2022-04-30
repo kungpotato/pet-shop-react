@@ -1,9 +1,11 @@
-var Adoption = artifacts.require('Adoption')
-var NFT = artifacts.require('NFT')
-var PotatoMarket = artifacts.require('PotatoMarket')
+const Adoption = artifacts.require('Adoption')
+const NFT = artifacts.require('NFT')
+const PotatoMarket = artifacts.require('PotatoMarket')
 
 module.exports = function (deployer) {
   deployer.deploy(Adoption)
-  deployer.deploy(NFT,'0xC03e535b7B069675e78071a71E2fbCaeBe270cE6')
-  deployer.deploy(PotatoMarket)
+
+  deployer.deploy(PotatoMarket).then(function () {
+    return deployer.deploy(NFT, PotatoMarket.address)
+  })
 }
