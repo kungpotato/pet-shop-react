@@ -32,10 +32,8 @@ function App(): JSX.Element {
 
   const getMetamaskAccount = async () => {
     const accounts = await getMetamask()
-    console.log({ accounts })
 
     const chainId = await getChainId()
-    console.log({ chainId })
     if (chainId !== 5777) {
       alert('incurrect chain')
     }
@@ -111,17 +109,12 @@ function App(): JSX.Element {
   async function buyNft(nft: INFTItem) {
     const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
-    const price = ethers.utils.parseUnits(nft?.price.toString(), 'ether')
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
     const networkId = await getChainId()
-    if (networkId) {
-      let transaction = await marketContract.methods.createMarketSale(
-        (NFT.networks as any)[networkId]?.address,
-        nft.itemId
-      )
-      transaction = await transaction.send({ from: accounts[0], value: price })
-      await transaction.wait()
-      loadNFTs()
-    }
+    let transaction = await marketContract.methods.createMarketSale(NFT.networks[5777].address, nft.itemId)
+    transaction = await transaction.send({ from: accounts[0], value: price })
+    await transaction.wait()
+    loadNFTs()
   }
 
   return (
@@ -129,7 +122,7 @@ function App(): JSX.Element {
       serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
       appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
     >
-      <ResponsiveAppBar />
+      <ResponsiveAppBar accounts={accounts} />
       <Box p={4} display="flex">
         <Box p={2}>
           <CardItem

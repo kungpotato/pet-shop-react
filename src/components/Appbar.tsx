@@ -13,9 +13,15 @@ import { create } from 'ipfs-http-client'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
 import Moralis from 'moralis'
+import { getWeb3Contract } from '../libs/web3'
+import PotatoMarket from '../definition/PotatoMarket.json'
+import NFT from '../definition/NFT.json'
+import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
-
+interface IAppbar {
+  accounts: string[]
+}
 interface IformInput {
   price: string
   name: string
@@ -24,8 +30,9 @@ interface IformInput {
 
 const pages = ['expole', 'my item']
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = ({ accounts }: IAppbar) => {
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
+
   const formInput: IformInput = {
     name: faker.company.companyName(),
     description: faker.commerce.productDescription(),
@@ -70,7 +77,9 @@ const ResponsiveAppBar = () => {
             console.log(data)
 
             /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-            // createSale(result.url)
+            if (result) {
+              createSale(result.url())
+            }
           } catch (error) {
             console.log('Error uploading file: ', error)
           }
@@ -78,46 +87,28 @@ const ResponsiveAppBar = () => {
         onError: (error) => console.log(error)
       })
     }
-
-    //   const { name, description, price } = formInput
-    //   if (!name || !description || !price || !fileUrl) return
-    //   /* first, upload to IPFS */
-    //   const data = JSON.stringify({
-    //     name,
-    //     description,
-    //     image: fileUrl
-    //   })
-    //   console.log({data})
-
-    //   try {
-    //     const added = await client.add(data)
-    //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-    //     console.log({url})
-
-    //     /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-    //     // createSale(url)
-    //   } catch (error) {
-    //     console.log('Error uploading file: ', error)
-    //   }
   }
 
-  // async function createSale(url: string) {
-  //   let transaction = await contract.createToken(url)
-  //   let tx = await transaction.wait()
-  //   let event = tx.events[0]
-  //   let value = event.args[2]
-  //   let tokenId = value.toNumber()
+  const createSale = async (url: string) => {
+    const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
+    const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
 
-  //   const price = ethers.utils.parseUnits(formInput.price, 'ether')
+    let transaction = await ntfContract.methods.mintToken(url)
 
-  //   /* then list the item for sale on the marketplace */
-  //   contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-  //   let listingPrice = await contract.getListingPrice()
-  //   listingPrice = listingPrice.toString()
+    const itemId = await (transaction as any).call()
 
-  //   transaction = await contract.createMarketItem(nftaddress, tokenId, price, { value: listingPrice })
-  //   await transaction.wait()
-  // }
+    const price = ethers.utils.parseUnits(formInput.price, 'ether') as any
+
+    /* then list the item for sale on the marketplace */
+
+    let listingPrice = await marketContract.methods.getListingPrice()
+    listingPrice = await (listingPrice as any).call()
+
+    transaction = await marketContract.methods.makeMarketItem(NFT.networks[5777].address, itemId, price)
+
+    transaction = await (transaction as any).send({ from: accounts[0] ?? '', value: listingPrice })
+    await transaction.wait()
+  }
 
   const fileInput = (e: any) => {
     setFileTarget(e.target.files[0])
