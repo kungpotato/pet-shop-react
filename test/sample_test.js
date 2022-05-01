@@ -1,6 +1,3 @@
-declare const artifacts: any
-declare const contract: any
-
 const PotatoMarket = artifacts.require('PotatoMarket')
 const NFT = artifacts.require('NFT')
 const ethers = require('ethers')

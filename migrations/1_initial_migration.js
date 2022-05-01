@@ -1,9 +1,7 @@
-declare const artifacts: any
-
 const Migrations = artifacts.require('Migrations')
 
 module.exports = function (deployer) {
   deployer.deploy(Migrations)
 }
 
-export {}
+
