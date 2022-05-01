@@ -1,3 +1,5 @@
+import './style.css'
+
 import { chainChanged, getMetamask } from './libs/metamask'
 // import { getEtherContract } from './libs/ethereum'
 import Adoption from './definition/Adoption.json'
@@ -9,6 +11,8 @@ import CardItem from './components/Card'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { ethers } from 'ethers'
+import ResponsiveAppBar from './components/Appbar'
+import { Box } from '@mui/material'
 
 interface INFTItem {
   price: string
@@ -103,15 +107,15 @@ function App(): JSX.Element {
     setNfts(items)
   }
 
-  async function buyNft(nft?: INFTItem) {
+  async function buyNft(nft: INFTItem) {
     const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
-    const price = ethers.utils.parseUnits(nft?.price.toString() ?? '0.045', 'ether')
+    const price = ethers.utils.parseUnits(nft?.price.toString(), 'ether')
     const networkId = await getChainId()
     if (networkId) {
       let transaction = await marketContract.methods.createMarketSale(
         (NFT.networks as any)[networkId]?.address,
-        nft?.itemId ?? 1
+        nft.itemId
       )
       transaction = await transaction.send({ from: accounts[0], value: price })
       await transaction.wait()
@@ -120,11 +124,18 @@ function App(): JSX.Element {
   }
 
   return (
-    <CardItem
-      onClick={(e) => {
-        buyNft(nfts[0])
-      }}
-    />
+    <div>
+      <ResponsiveAppBar />
+      <Box p={4} display="flex">
+        <Box p={2}>
+          <CardItem
+            onClick={(e) => {
+              buyNft(nfts[0])
+            }}
+          />
+        </Box>
+      </Box>
+    </div>
   )
 }
 

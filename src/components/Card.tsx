@@ -18,11 +18,11 @@ interface ICardItem {
 
 export default function CardItem({ onClick }: ICardItem) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 300 }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            K
           </Avatar>
         }
         action={
