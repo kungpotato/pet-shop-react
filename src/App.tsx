@@ -1,13 +1,30 @@
-import './App.css'
 import { chainChanged, getMetamask } from './libs/metamask'
 // import { getEtherContract } from './libs/ethereum'
 import Adoption from './definition/Adoption.json'
-import {AdoptionInstance} from '../types/truffle-contracts'
+import PotatoMarket from './definition/PotatoMarket.json'
+import NFT from './definition/NFT.json'
+import { AdoptionInstance, PotatoMarketInstance, NFTInstance } from '../types/truffle-contracts'
 import { contractEvent, getChainId, getContractEvent, getWeb3Contract } from './libs/web3'
+import CardItem from './components/Card'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { ethers } from 'ethers'
 
+interface INFTItem {
+  price: string
+  itemId: number
+  seller: string
+  owner: string
+  image: any
+  name: any
+  description: any
+}
 
 function App(): JSX.Element {
   let count = 0
+  const [nfts, setNfts] = useState<INFTItem[]>([])
+  const [accounts, setAccounts] = useState<string[]>([])
+
   const getMetamaskAccount = async () => {
     const accounts = await getMetamask()
     console.log({ accounts })
@@ -25,15 +42,15 @@ function App(): JSX.Element {
     const accounts = await getMetamaskAccount()
     // const contract = await getEtherContract(Adoption)
     const contract = (await getWeb3Contract(Adoption)) as unknown as AdoptionInstance
-    const adopt = await contract?.methods.adopt(count.toString())
-    adopt.send({ from: accounts[0] })
+    let adopt = await contract?.methods.adopt(count.toString())
+    adopt = await adopt.send({ from: accounts[0] })
 
     count += 1
     console.log(count)
 
     // Get the value from the contract to prove it worked.
-    const getAdopters = await contract?.methods.getAdopters() as any
-    getAdopters.call()
+    let getAdopters = await contract?.methods.getAdopters()
+    getAdopters = await (getAdopters as any).call()
 
     console.log({ getAdopters })
 
@@ -51,12 +68,63 @@ function App(): JSX.Element {
     }
   })
 
+  useEffect(() => {
+    getMetamaskAccount().then((data) => {
+      setAccounts(data)
+      loadNFTs()
+    })
+  }, [])
+
+  async function loadNFTs() {
+    const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
+    const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
+    let marketItems = await marketContract.methods.fetchMarketItems()
+    marketItems = await (marketItems as any).call()
+
+    const items = await Promise.all(
+      marketItems.map(async (i) => {
+        const tokenUri = await ntfContract.tokenURI(i.tokenId)
+        const meta = await axios.get(tokenUri)
+        const price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+        const item = {
+          price,
+          itemId: i.itemId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          image: meta.data.image,
+          name: meta.data.name,
+          description: meta.data.description
+        }
+        return item
+      })
+    )
+    console.log({ items })
+
+    setNfts(items)
+  }
+
+  async function buyNft(nft?: INFTItem) {
+    const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
+    // const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
+    const price = ethers.utils.parseUnits(nft?.price.toString() ?? '0.045', 'ether')
+    const networkId = await getChainId()
+    if (networkId) {
+      let transaction = await marketContract.methods.createMarketSale(
+        (NFT.networks as any)[networkId]?.address,
+        nft?.itemId ?? 1
+      )
+      transaction = await transaction.send({ from: accounts[0], value: price })
+      await transaction.wait()
+      loadNFTs()
+    }
+  }
+
   return (
-    <div className="App">
-      <h1>Test Metamask</h1>
-      <button onClick={getMetamaskAccount}>connect</button>
-      <button onClick={adopt}>adopt</button>
-    </div>
+    <CardItem
+      onClick={(e) => {
+        buyNft(nfts[0])
+      }}
+    />
   )
 }
 
