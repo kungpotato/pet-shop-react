@@ -13,6 +13,7 @@ import axios from 'axios'
 import { ethers } from 'ethers'
 import ResponsiveAppBar from './components/Appbar'
 import { Box } from '@mui/material'
+import { MoralisProvider, useMoralis } from 'react-moralis'
 
 interface INFTItem {
   price: string
@@ -124,7 +125,10 @@ function App(): JSX.Element {
   }
 
   return (
-    <div>
+    <MoralisProvider
+      serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
+      appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
+    >
       <ResponsiveAppBar />
       <Box p={4} display="flex">
         <Box p={2}>
@@ -135,7 +139,7 @@ function App(): JSX.Element {
           />
         </Box>
       </Box>
-    </div>
+    </MoralisProvider>
   )
 }
 
