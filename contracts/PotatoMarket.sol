@@ -118,7 +118,7 @@ contract PotatoMarket is ReentrancyGuard {
   // function to fetchMarketItem - minting, buying and selling
   // return the number of unsold items
 
-  function fetchMarketItem() public view returns (MarketToken[] memory) {
+  function fetchMarketItems() public view returns (MarketToken[] memory) {
     uint256 itemCount = _tokenIds.current();
     uint256 unsoldItemCount = _tokenIds.current() - _tokenSold.current();
     uint256 currentIndex = 0;

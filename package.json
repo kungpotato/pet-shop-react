@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^14.1.1",
+    "@typechain/truffle-v5": "^8.0.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.30",
     "@types/react": "^18.0.8",
@@ -15,6 +16,8 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "4.0.3",
+    "truffle": "^5.5.12",
+    "typechain": "^8.0.0",
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4",
     "web3": "^1.7.3",
@@ -28,9 +31,8 @@
     "eject": "react-scripts eject",
     "format": "prettier --config ./.prettierrc --write {,*/**/}*.{ts,tsx,json}",
     "complie": "truffle complie",
-    "migrate": "truffle migrate",
-    "migrate-reset": "truffle migrate --reset",
-    "gen-type": "abi-types-generator './src/definition/PotatoMarket.json' --output='./src/contract-type' --name=PotatoMarket"
+    "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
+    "generate": "truffle compile && typechain --target=truffle-v5 './src/definition/**/*.json'"
   },
   "eslintConfig": {
     "extends": [

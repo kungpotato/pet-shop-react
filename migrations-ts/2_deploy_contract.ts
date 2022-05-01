@@ -1,3 +1,5 @@
+declare const artifacts: any
+
 const Adoption = artifacts.require('Adoption')
 const NFT = artifacts.require('NFT')
 const PotatoMarket = artifacts.require('PotatoMarket')
@@ -9,3 +11,5 @@ module.exports = function (deployer) {
     return deployer.deploy(NFT, PotatoMarket.address)
   })
 }
+
+export {}
