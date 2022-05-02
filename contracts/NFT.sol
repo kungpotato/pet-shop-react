@@ -16,8 +16,11 @@ contract NFT is ERC721URIStorage {
   // OBJ: give the NFT market the ability to transact with tokens or change ownership
   // setApprovalForAll allows us to do that with contract address
 
+  event MintedNFT(address indexed minter, string tokenURI, uint256 nftId);
+
   // constructor set up our address
   constructor(address marketplaceAddress) ERC721('Potato', 'PTT') {
+    require(marketplaceAddress != address(0), 'NFT: invalid market address');
     contractAddress = marketplaceAddress;
   }
 
@@ -29,6 +32,8 @@ contract NFT is ERC721URIStorage {
     // give the market the approval to transact between users
     setApprovalForAll(contractAddress, true);
     // min the token and set it for sale - return the id to do so
+    emit MintedNFT(msg.sender, tokenURI, newItemId);
+
     return newItemId;
   }
 }

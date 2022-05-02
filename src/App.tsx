@@ -46,7 +46,7 @@ function App(): JSX.Element {
     // const contract = await getEtherContract(Adoption)
     const contract = (await getWeb3Contract(Adoption)) as unknown as AdoptionInstance
     let adopt = await contract?.methods.adopt(count.toString())
-    adopt = await adopt.send({ from: accounts[0] })
+    adopt = await adopt.send({ from: accounts[0], gas: 5000000, gasLimit: 21000, gasPrice: 21000 })
 
     count += 1
     console.log(count)
@@ -127,7 +127,8 @@ function App(): JSX.Element {
         <Box p={2}>
           <CardItem
             onClick={(e) => {
-              buyNft(nfts[0])
+              // buyNft(nfts[0])
+              adopt()
             }}
           />
         </Box>

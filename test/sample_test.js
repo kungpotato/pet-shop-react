@@ -5,8 +5,8 @@ const ethers = require('ethers')
 contract('Potato Market', (accounts) => {
   it('should mint and trade NFTs', async () => {
     const potatoMarket = await PotatoMarket.deployed()
-    const nft = await NFT.deployed()
-    const marketAddress = nft.address
+    const nft = await NFT.deployed(marketAddress)
+
     const nftContractAddress = nft.address
 
     const listingPrice = await potatoMarket.getListingPrice()
