@@ -13,7 +13,7 @@ import axios from 'axios'
 import { ethers } from 'ethers'
 import ResponsiveAppBar from './components/Appbar'
 import { Box } from '@mui/material'
-import { MoralisProvider, useMoralis } from 'react-moralis'
+import { MoralisProvider } from 'react-moralis'
 
 interface INFTItem {
   price: string
@@ -34,7 +34,7 @@ function App(): JSX.Element {
     const accounts = await getMetamask()
 
     const chainId = await getChainId()
-    if (chainId !== 5777) {
+    if (chainId !== 1337) {
       alert('incurrect chain')
     }
 
@@ -66,7 +66,7 @@ function App(): JSX.Element {
     const chainId = await getChainId()
     console.log({ chainId })
 
-    if (chainId !== 5777) {
+    if (chainId !== 1337) {
       alert('incurrect chain')
     }
   })
@@ -88,9 +88,9 @@ function App(): JSX.Element {
       marketItems.map(async (i) => {
         const tokenUri = await ntfContract.tokenURI(i.tokenId)
         const meta = await axios.get(tokenUri)
-        const price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+        // const price = ethers.utils.formatUnits(i.price.toString(), 'ether')
         const item = {
-          price,
+          price: i.price.toString(),
           itemId: i.itemId.toNumber(),
           seller: i.seller,
           owner: i.owner,
@@ -109,10 +109,10 @@ function App(): JSX.Element {
   async function buyNft(nft: INFTItem) {
     const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-    const networkId = await getChainId()
-    let transaction = await marketContract.methods.createMarketSale(NFT.networks[5777].address, nft.itemId)
-    transaction = await transaction.send({ from: accounts[0], value: price })
+    // const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
+    // const networkId = await getChainId()
+    let transaction = await marketContract.methods.createMarketSale(NFT.networks[1337].address, nft.itemId)
+    transaction = await transaction.send({ from: accounts[0], value: nft.price.toString() })
     await transaction.wait()
     loadNFTs()
   }

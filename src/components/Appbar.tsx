@@ -93,21 +93,30 @@ const ResponsiveAppBar = ({ accounts }: IAppbar) => {
     const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
     const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
 
-    let transaction = await ntfContract.methods.mintToken(url)
+    let itemId = await ntfContract.methods.mintToken(url)
 
-    const itemId = await (transaction as any).call()
+    itemId = await (itemId as any).call()
 
-    const price = ethers.utils.parseUnits(formInput.price, 'ether') as any
+    const price = ethers.utils.parseUnits(formInput.price, 'ether')
 
     /* then list the item for sale on the marketplace */
 
     let listingPrice = await marketContract.methods.getListingPrice()
     listingPrice = await (listingPrice as any).call()
 
-    transaction = await marketContract.methods.makeMarketItem(NFT.networks[5777].address, itemId, price)
+    const makeMarketItem = await marketContract.methods.makeMarketItem(
+      NFT.networks[1337].address,
+      itemId,
+      price.toString()
+    )
 
-    transaction = await (transaction as any).send({ from: accounts[0] ?? '', value: listingPrice })
-    await transaction.wait()
+    await (makeMarketItem as any).send({
+      from: accounts[0],
+      value: listingPrice,
+      gas: 5000000,
+      gasLimit: 21000,
+      gasPrice: 21000
+    })
   }
 
   const fileInput = (e: any) => {

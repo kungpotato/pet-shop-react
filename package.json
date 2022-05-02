@@ -51,7 +51,7 @@
     "test-contract": "truffle test --debug",
     "eject": "react-scripts eject",
     "format": "prettier --config ./.prettierrc --write {,*/**/}*.{ts,tsx,json}",
-    "complie": "truffle complie",
+    "complie": "truffle complie --network=ganache",
     "migrate": "tsc -p ./tsconfig.migrate.json --outDir ./migrations && truffle migrate",
     "generate": "truffle compile && typechain --target=truffle-v5 './src/definition/**/*.json'"
   },

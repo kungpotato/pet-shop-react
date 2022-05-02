@@ -15,16 +15,31 @@ contract('Potato Market', (accounts) => {
     await nft.mintToken('https-t1')
     await nft.mintToken('https-t2')
 
-    await potatoMarket.makeMarketItem(nftContractAddress, 1, auctionPrice, {
+    await potatoMarket.makeMarketItem(nftContractAddress, 1, auctionPrice.toString(), {
       value: listingPrice,
-      gasLimit: 1000000
+      gas: 5000000,
+      gasLimit: 21000,
+      gasPrice: 21000
     })
-    await potatoMarket.makeMarketItem(nftContractAddress, 2, auctionPrice, {
+    await potatoMarket.makeMarketItem(nftContractAddress, 2, auctionPrice.toString(), {
       value: listingPrice,
-      gasPrice: 1000000
+      gas: 5000000,
+      gasLimit: 21000,
+      gasPrice: 21000
     })
 
-    await potatoMarket.createMarketSale.call(nftContractAddress, 1, { value: auctionPrice, gasPrice: 1000000 })
+    await potatoMarket.createMarketSale.call(nftContractAddress, 1, {
+      value: auctionPrice,
+      gas: 5000000,
+      gasLimit: 21000,
+      gasPrice: 21000
+    })
+    await potatoMarket.createMarketSale.call(nftContractAddress, 2, {
+      value: auctionPrice,
+      gas: 5000000,
+      gasLimit: 21000,
+      gasPrice: 21000
+    })
 
     let items = await potatoMarket.fetchMarketItems()
     items = await Promise.all(
