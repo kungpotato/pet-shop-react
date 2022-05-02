@@ -14,8 +14,10 @@ import { ethers } from 'ethers'
 import ResponsiveAppBar from './components/Appbar'
 import { Box } from '@mui/material'
 import { MoralisProvider } from 'react-moralis'
+import { getEtherContract } from './libs/ethereum'
+import Moralis from 'moralis'
 
-interface INFTItem {
+export interface INFTItem {
   price: string
   itemId: number
   seller: string
@@ -42,11 +44,10 @@ function App(): JSX.Element {
   }
 
   async function adopt() {
-    const accounts = await getMetamaskAccount()
     // const contract = await getEtherContract(Adoption)
-    const contract = (await getWeb3Contract(Adoption)) as unknown as AdoptionInstance
-    let adopt = await contract?.methods.adopt(count.toString())
-    adopt = await adopt.send({ from: accounts[0], gas: 5000000, gasLimit: 21000, gasPrice: 21000 })
+    const contract = (await getEtherContract(Adoption)) as unknown as AdoptionInstance
+    const adopt = await contract.adopt(count.toString())
+    await adopt.wait()
 
     count += 1
     console.log(count)
@@ -79,40 +80,43 @@ function App(): JSX.Element {
   }, [])
 
   async function loadNFTs() {
-    const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
-    const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
-    let marketItems = await marketContract.methods.fetchMarketItems()
-    marketItems = await (marketItems as any).call()
+    const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
+    const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
+    const marketItems = await marketContract?.fetchMarketItems()
 
     const items = await Promise.all(
-      marketItems.map(async (i) => {
-        const tokenUri = await ntfContract.tokenURI(i.tokenId)
-        const meta = await axios.get(tokenUri)
-        // const price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+      marketItems?.map(async (i) => {
+        const tokenUri = await ntfContract?.tokenURI(i.tokenId)
+
+        const query = new Moralis.Query('potatoNFTMarket')
+        query.equalTo('itemId', i.itemId.toNumber())
+        const res = await query.find()
+        const data = JSON.parse(res[0].get('data'))
+
         const item = {
           price: i.price.toString(),
           itemId: i.itemId.toNumber(),
           seller: i.seller,
           owner: i.owner,
-          image: meta.data.image,
-          name: meta.data.name,
-          description: meta.data.description
+          image: tokenUri,
+          name: data['name'],
+          description: data['description']
         }
         return item
       })
     )
-    console.log({ items })
 
     setNfts(items)
   }
 
   async function buyNft(nft: INFTItem) {
-    const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
+    const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
     // const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
     // const networkId = await getChainId()
-    let transaction = await marketContract.methods.createMarketSale(NFT.networks[1337].address, nft.itemId)
-    transaction = await transaction.send({ from: accounts[0], value: nft.price.toString() })
+    const transaction = await marketContract.createMarketSale(NFT.networks[1337].address, nft.itemId, {
+      value: nft.price.toString()
+    })
     await transaction.wait()
     loadNFTs()
   }
@@ -122,16 +126,19 @@ function App(): JSX.Element {
       serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
       appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
     >
-      <ResponsiveAppBar accounts={accounts} />
+      <ResponsiveAppBar accounts={accounts} loadNFTs={loadNFTs} />
       <Box p={4} display="flex">
-        <Box p={2}>
-          <CardItem
-            onClick={(e) => {
-              // buyNft(nfts[0])
-              adopt()
-            }}
-          />
-        </Box>
+        {nfts.map((e, i) => (
+          <Box p={2} key={i}>
+            <CardItem
+              data={e}
+              onClick={(e) => {
+                // buyNft(nfts[0])
+                adopt()
+              }}
+            />
+          </Box>
+        ))}
       </Box>
     </MoralisProvider>
   )

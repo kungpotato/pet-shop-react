@@ -9,18 +9,18 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import { ethers } from 'ethers'
-import { create } from 'ipfs-http-client'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
 import Moralis from 'moralis'
-import { getWeb3Contract } from '../libs/web3'
 import PotatoMarket from '../definition/PotatoMarket.json'
 import NFT from '../definition/NFT.json'
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
+import { getEtherContract } from '../libs/ethereum'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 interface IAppbar {
   accounts: string[]
+  loadNFTs: () => Promise<void>
 }
 interface IformInput {
   price: string
@@ -30,7 +30,7 @@ interface IformInput {
 
 const pages = ['expole', 'my item']
 
-const ResponsiveAppBar = ({ accounts }: IAppbar) => {
+const ResponsiveAppBar = ({ accounts, loadNFTs }: IAppbar) => {
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
 
   const formInput: IformInput = {
@@ -62,26 +62,10 @@ const ResponsiveAppBar = ({ accounts }: IAppbar) => {
         type: 'base64',
         saveIPFS: true,
         onSuccess: async (result) => {
-          const { name, description, price } = formInput
-          const data = JSON.stringify({
-            ...result.toJSON(),
-            name,
-            description
-          })
+          const url = (result as any).ipfs()
 
-          try {
-            const obj = new Moralis.Object('potatoNFTMarket')
-            obj.set('name', name)
-            obj.set('data', data)
-            await obj.save()
-            console.log(data)
-
-            /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-            if (result) {
-              createSale(result.url())
-            }
-          } catch (error) {
-            console.log('Error uploading file: ', error)
+          if (result) {
+            createSale(url)
           }
         },
         onError: (error) => console.log(error)
@@ -90,33 +74,51 @@ const ResponsiveAppBar = ({ accounts }: IAppbar) => {
   }
 
   const createSale = async (url: string) => {
-    const marketContract = (await getWeb3Contract(PotatoMarket)) as unknown as PotatoMarketInstance
-    const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
+    try {
+      const { name, description } = formInput
+      const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
+      const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
 
-    let itemId = await ntfContract.methods.mintToken(url)
+      const mintToken = await ntfContract.mintToken(url)
 
-    itemId = await (itemId as any).call()
+      const tx = await (mintToken as any).wait()
 
-    const price = ethers.utils.parseUnits(formInput.price, 'ether')
+      const event = tx.events[0]
+      const value = event.args[2]
+      const itemId = value.toNumber()
 
-    /* then list the item for sale on the marketplace */
+      const data = JSON.stringify({
+        url: url,
+        name,
+        description
+      })
 
-    let listingPrice = await marketContract.methods.getListingPrice()
-    listingPrice = await (listingPrice as any).call()
+      const obj = new Moralis.Object('potatoNFTMarket')
+      obj.set('itemId', itemId)
+      obj.set('data', data)
+      await obj.save()
 
-    const makeMarketItem = await marketContract.methods.makeMarketItem(
-      NFT.networks[1337].address,
-      itemId,
-      price.toString()
-    )
+      const price = ethers.utils.parseUnits(formInput.price, 'ether')
 
-    await (makeMarketItem as any).send({
-      from: accounts[0],
-      value: listingPrice,
-      gas: 5000000,
-      gasLimit: 21000,
-      gasPrice: 21000
-    })
+      /* then list the item for sale on the marketplace */
+
+      const listingPrice = await marketContract?.getListingPrice()
+
+      const makeMarketItem = await marketContract?.makeMarketItem(
+        NFT.networks[1337].address,
+        itemId,
+        price.toString(),
+        {
+          value: listingPrice.toString()
+        }
+      )
+
+      await (makeMarketItem as any).wait()
+      loadNFTs()
+      setFileTarget(undefined)
+    } catch (error) {
+      console.log('Error: ', error)
+    }
   }
 
   const fileInput = (e: any) => {

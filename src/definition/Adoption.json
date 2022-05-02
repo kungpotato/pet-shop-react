@@ -3063,12 +3063,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0x3FC5BC69840441DA13F7B14B11308339b48Ba06C",
-      "transactionHash": "0x174d213d9e46ea2a8ab394fcbfa78dc4679fced58e69a113875d6cf7a03967c5"
+      "address": "0x48eDA4E3809b5E5942f7B3a3BE53D73FCDBd4423",
+      "transactionHash": "0xe912af7bff101cc8af1497d23c16965dc3b282e1e2acfa859f35b7b0d9f1021c"
     }
   },
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-05-02T06:18:43.824Z",
+  "updatedAt": "2022-05-02T14:15:21.599Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

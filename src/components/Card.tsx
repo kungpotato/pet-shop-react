@@ -11,12 +11,14 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { faker } from '@faker-js/faker'
 import { Button, Stack } from '@mui/material'
 import { ShoppingCart } from '@mui/icons-material'
+import { INFTItem } from '../App'
 
 interface ICardItem {
   onClick: React.MouseEventHandler<HTMLButtonElement>
+  data: INFTItem
 }
 
-export default function CardItem({ onClick }: ICardItem) {
+export default function CardItem({ onClick, data }: ICardItem) {
   return (
     <Card sx={{ maxWidth: 300 }}>
       <CardHeader
@@ -30,13 +32,12 @@ export default function CardItem({ onClick }: ICardItem) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={faker.company.companyName()}
-        subheader={faker.name.firstName()}
+        title={data.name}
       />
-      <CardMedia component="img" height="194" image="/images/world-gd782a93d6_640.jpg" alt="Paella dish" />
+      <CardMedia component="img" height="194" image={data.image} />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {faker.commerce.productDescription()}
+          {data.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
