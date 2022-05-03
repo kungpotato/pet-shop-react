@@ -7,13 +7,14 @@ import PotatoMarket from './definition/PotatoMarket.json'
 import NFT from './definition/NFT.json'
 import { AdoptionInstance, PotatoMarketInstance, NFTInstance } from '../types/truffle-contracts'
 import { contractEvent, getChainId, getContractEvent, getWeb3Contract } from './libs/web3'
-import CardItem from './components/Card'
+
 import { useEffect, useState } from 'react'
-import ResponsiveAppBar from './components/Appbar'
-import { Box } from '@mui/material'
 import { MoralisProvider } from 'react-moralis'
 import { getEtherContract } from './libs/ethereum'
 import Moralis from 'moralis'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { routes } from './routes'
+import { ResponsiveAppBar } from './components/appbar'
 
 export interface INFTItem {
   price: string
@@ -119,19 +120,19 @@ function App(): JSX.Element {
   }
 
   return (
-    <MoralisProvider
-      serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
-      appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
-    >
-      <ResponsiveAppBar accounts={accounts} loadNFTs={loadNFTs} />
-      <Box p={4} display="flex">
-        {nfts.map((e, i) => (
-          <Box p={2} key={i}>
-            <CardItem data={e} loadNFTs={loadNFTs} />
-          </Box>
-        ))}
-      </Box>
-    </MoralisProvider>
+    <BrowserRouter>
+      <MoralisProvider
+        serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
+        appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
+      >
+        <ResponsiveAppBar accounts={accounts} loadNFTs={loadNFTs} />
+        <Routes>
+          {routes.map((e) => (
+            <Route path={e.path} element={e.element({ nfts, loadNFTs })} />
+          ))}
+        </Routes>
+      </MoralisProvider>
+    </BrowserRouter>
   )
 }
 

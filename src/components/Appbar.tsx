@@ -16,6 +16,8 @@ import PotatoMarket from '../definition/PotatoMarket.json'
 import NFT from '../definition/NFT.json'
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
+import { Link } from 'react-router-dom'
+import { routes } from '../routes'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 interface IAppbar {
@@ -27,8 +29,6 @@ interface IformInput {
   name: string
   description: string
 }
-
-const pages = ['expole', 'my item']
 
 const ResponsiveAppBar = ({ accounts, loadNFTs }: IAppbar) => {
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
@@ -134,10 +134,12 @@ const ResponsiveAppBar = ({ accounts, loadNFTs }: IAppbar) => {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button key={page} sx={{ my: 2, color: 'white', display: 'block' }}>
-                {page}
-              </Button>
+            {routes.map((page) => (
+              <Link to={`/${page.path}`}>
+                <Button key={page.title} sx={{ my: 2, color: 'white', display: 'block' }}>
+                  {page.title}
+                </Button>
+              </Link>
             ))}
           </Box>
           <input type="file" onChange={fileInput} />

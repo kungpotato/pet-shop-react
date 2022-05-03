@@ -22,7 +22,7 @@ interface ICardItem {
   loadNFTs: () => Promise<void>
 }
 
-export default function CardItem({ data, loadNFTs }: ICardItem) {
+export const CardItem = ({ data, loadNFTs }: ICardItem) => {
   const handleClick = async () => {
     const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
