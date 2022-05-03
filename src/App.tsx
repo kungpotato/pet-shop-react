@@ -37,7 +37,7 @@ function App(): JSX.Element {
 
     const chainId = await getChainId()
     if (chainId !== 1337) {
-      alert('incurrect chain')
+      console.log('incurrect chain')
     }
 
     return accounts
@@ -62,13 +62,12 @@ function App(): JSX.Element {
     console.log({ events })
   }
 
-  chainChanged(async (data) => {
-    console.log(data)
-    const chainId = await getChainId()
-    console.log({ chainId })
-
-    if (chainId !== 1337) {
-      alert('incurrect chain')
+  chainChanged(async (id) => {
+    if (id !== 1337) {
+      console.log('incurrect chain')
+      setNfts([])
+    } else {
+      loadNFTs()
     }
   })
 
@@ -82,10 +81,10 @@ function App(): JSX.Element {
   async function loadNFTs() {
     const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
     const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
-    const marketItems = await marketContract?.fetchMarketItems()
+    const marketItems = (await marketContract?.fetchMarketItems()) ?? []
 
     const items = await Promise.all(
-      marketItems?.map(async (i) => {
+      marketItems.map(async (i) => {
         const tokenUri = await ntfContract?.tokenURI(i.tokenId)
 
         const query = new Moralis.Query('potatoNFTMarket')
