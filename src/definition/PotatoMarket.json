@@ -20762,12 +20762,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0x01934a568a7F8cA3C0DC55DfE37689388e77D882",
-      "transactionHash": "0xf9dd7ce890ea47c806a2622d17b020ece6c00b9f12a3aeb51f24643b66435a50"
+      "address": "0x6971a0a3705213ba8b079a7675fdBAbad560075F",
+      "transactionHash": "0x4117072d8ce3309f2a4e44103d411ec18115373e11c84281a2db5394396aa7e8"
     }
   },
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-05-02T14:15:21.622Z",
+  "updatedAt": "2022-05-03T13:03:31.183Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

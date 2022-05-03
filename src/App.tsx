@@ -9,8 +9,6 @@ import { AdoptionInstance, PotatoMarketInstance, NFTInstance } from '../types/tr
 import { contractEvent, getChainId, getContractEvent, getWeb3Contract } from './libs/web3'
 import CardItem from './components/Card'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { ethers } from 'ethers'
 import ResponsiveAppBar from './components/Appbar'
 import { Box } from '@mui/material'
 import { MoralisProvider } from 'react-moralis'
@@ -129,13 +127,7 @@ function App(): JSX.Element {
       <Box p={4} display="flex">
         {nfts.map((e, i) => (
           <Box p={2} key={i}>
-            <CardItem
-              data={e}
-              onClick={(e) => {
-                // buyNft(nfts[0])
-                adopt()
-              }}
-            />
+            <CardItem data={e} loadNFTs={loadNFTs} />
           </Box>
         ))}
       </Box>

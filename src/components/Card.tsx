@@ -8,17 +8,35 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { red } from '@mui/material/colors'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { faker } from '@faker-js/faker'
-import { Button, Stack } from '@mui/material'
+import { Box, Button, Stack } from '@mui/material'
 import { ShoppingCart } from '@mui/icons-material'
 import { INFTItem } from '../App'
+import { getEtherContract } from '../libs/ethereum'
+import NFT from '../definition/NFT.json'
+import PotatoMarket from '../definition/PotatoMarket.json'
+import { PotatoMarketInstance } from '../../types/truffle-contracts'
+import { ethers } from 'ethers'
 
 interface ICardItem {
-  onClick: React.MouseEventHandler<HTMLButtonElement>
   data: INFTItem
+  loadNFTs: () => Promise<void>
 }
 
-export default function CardItem({ onClick, data }: ICardItem) {
+export default function CardItem({ data, loadNFTs }: ICardItem) {
+  const handleClick = async () => {
+    const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
+    // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
+    const price = ethers.utils.formatUnits(data.price, 'wei')
+
+    const createMarketSale = await marketContract.createMarketSale(NFT.networks[1337].address, data.itemId, {
+      value: price.toString(),
+      gasLimit: '6721975',
+      gasPrice: '20000000000'
+    })
+    await (createMarketSale as any).wait()
+    loadNFTs()
+  }
+
   return (
     <Card sx={{ maxWidth: 300 }}>
       <CardHeader
@@ -42,7 +60,8 @@ export default function CardItem({ onClick, data }: ICardItem) {
       </CardContent>
       <CardActions disableSpacing>
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" endIcon={<ShoppingCart />} onClick={onClick}>
+          <Box>{`${ethers.utils.formatUnits(data.price, 'ether')} PTT`}</Box>
+          <Button variant="contained" endIcon={<ShoppingCart />} onClick={handleClick}>
             Buy
           </Button>
         </Stack>
