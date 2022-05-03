@@ -30,7 +30,7 @@ interface IformInput {
   description: string
 }
 
-const ResponsiveAppBar = ({ accounts, loadNFTs }: IAppbar) => {
+export const MyAppBar = ({ accounts, loadNFTs }: IAppbar) => {
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
 
   const formInput: IformInput = {
@@ -161,4 +161,3 @@ const ResponsiveAppBar = ({ accounts, loadNFTs }: IAppbar) => {
     </AppBar>
   )
 }
-export default ResponsiveAppBar

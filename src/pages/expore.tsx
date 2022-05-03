@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { INFTItem } from '../App'
-import { CardItem } from '../components/card'
+import { CardItem } from '../components/Card'
 
 export interface IExpore {
   nfts: INFTItem[]

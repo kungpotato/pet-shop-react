@@ -14,7 +14,7 @@ import { getEtherContract } from './libs/ethereum'
 import Moralis from 'moralis'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { routes } from './routes'
-import { ResponsiveAppBar } from './components/appbar'
+import { MyAppBar } from './components/Appbar'
 
 export interface INFTItem {
   price: string
@@ -125,7 +125,7 @@ function App(): JSX.Element {
         serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
         appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
       >
-        <ResponsiveAppBar accounts={accounts} loadNFTs={loadNFTs} />
+        <MyAppBar accounts={accounts} loadNFTs={loadNFTs} />
         <Routes>
           {routes.map((e) => (
             <Route path={e.path} element={e.element({ nfts, loadNFTs })} />
