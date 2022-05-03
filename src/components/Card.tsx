@@ -19,10 +19,11 @@ import { ethers } from 'ethers'
 
 interface ICardItem {
   data: INFTItem
-  loadNFTs: () => Promise<void>
+  loadNFTs?: () => Promise<void>
+  isForSale?: boolean
 }
 
-export const CardItem = ({ data, loadNFTs }: ICardItem) => {
+export const CardItem = ({ data, loadNFTs, isForSale = true }: ICardItem) => {
   const handleClick = async () => {
     const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
@@ -34,7 +35,9 @@ export const CardItem = ({ data, loadNFTs }: ICardItem) => {
       gasPrice: '20000000000'
     })
     await (createMarketSale as any).wait()
-    loadNFTs()
+    if (loadNFTs) {
+      loadNFTs()
+    }
   }
 
   return (
@@ -59,12 +62,14 @@ export const CardItem = ({ data, loadNFTs }: ICardItem) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <Stack direction="row" spacing={2}>
-          <Box>{`${ethers.utils.formatUnits(data.price, 'ether')} PTT`}</Box>
-          <Button variant="contained" endIcon={<ShoppingCart />} onClick={handleClick}>
-            Buy
-          </Button>
-        </Stack>
+        {isForSale == true && (
+          <Stack direction="row" spacing={2}>
+            <Box>{`${ethers.utils.formatUnits(data.price, 'ether')} PTT`}</Box>
+            <Button variant="contained" endIcon={<ShoppingCart />} onClick={handleClick}>
+              Buy
+            </Button>
+          </Stack>
+        )}
       </CardActions>
     </Card>
   )

@@ -127,8 +127,8 @@ function App(): JSX.Element {
       >
         <MyAppBar accounts={accounts} loadNFTs={loadNFTs} />
         <Routes>
-          {routes.map((e) => (
-            <Route path={e.path} element={e.element({ nfts, loadNFTs })} />
+          {routes.map((e, i) => (
+            <Route key={i} path={e.path} element={e.element({ nfts, loadNFTs })} />
           ))}
         </Routes>
       </MoralisProvider>

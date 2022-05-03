@@ -135,10 +135,8 @@ export const MyAppBar = ({ accounts, loadNFTs }: IAppbar) => {
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {routes.map((page) => (
-              <Link to={`/${page.path}`}>
-                <Button key={page.title} sx={{ my: 2, color: 'white', display: 'block' }}>
-                  {page.title}
-                </Button>
+              <Link to={`/${page.path}`} key={page.title}>
+                <Button sx={{ my: 2, color: 'white', display: 'block' }}>{page.title}</Button>
               </Link>
             ))}
           </Box>
