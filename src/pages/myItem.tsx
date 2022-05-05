@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { CardItem } from '../components/Card'
 import { accountChanged } from '../libs/metamask'
 import { getMetamaskAccount, useExpore } from '../states/expore/hook'
@@ -21,12 +21,14 @@ export const MyItem = (): JSX.Element => {
   })
 
   return (
-    <Box p={4} display="flex">
-      {mynfts.map((e, i) => (
-        <Box p={2} key={i}>
-          <CardItem data={e} isForSale={false} />
-        </Box>
-      ))}
+    <Box p={4} sx={{ flexGrow: 1 }}>
+      <Grid container spacing={1}>
+        {mynfts.map((e, i) => (
+          <Grid item lg={2} key={i}>
+            <CardItem data={e} isForSale={false} />
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   )
 }

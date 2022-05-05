@@ -44,7 +44,7 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   }
 
   return (
-    <Card sx={{ maxWidth: 300 }}>
+    <Card sx={{ maxWidth: 250 }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -58,16 +58,16 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
         }
         title={data.name}
       />
-      <CardMedia component="img" height="194" image={data.image} />
+      <CardMedia component="img" height="150" image={data.image} />
       <CardContent>
+        {isForSale && <Box>{`${ethers.utils.formatUnits(data.price, 'ether')} PTT`}</Box>}
         <Typography variant="body2" color="text.secondary">
           {data.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        {isForSale == true && (
+        {isForSale && (
           <Stack direction="row" spacing={2}>
-            <Box>{`${ethers.utils.formatUnits(data.price, 'ether')} PTT`}</Box>
             <Button variant="contained" endIcon={<ShoppingCart />} onClick={handleClick}>
               Buy
             </Button>

@@ -129,7 +129,7 @@ export const MyAppBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}>
-            LOGO
+            Potato NFT Market
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
@@ -141,8 +141,13 @@ export const MyAppBar = () => {
           </Box>
           <input type="file" onChange={fileInput} />
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button sx={{ my: 2, color: 'white', display: 'block' }} onClick={createMarket}>
-              create
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{ my: 2, color: 'white', display: 'block' }}
+              onClick={createMarket}
+            >
+              listing
             </Button>
           </Box>
 

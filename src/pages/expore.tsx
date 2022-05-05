@@ -28,7 +28,7 @@ export const Expore = (): JSX.Element => {
     <Box p={4} sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
         {nfts.map((e, i) => (
-          <Grid item xs={3} key={i}>
+          <Grid item lg={2} key={i}>
             <CardItem data={e} />
           </Grid>
         ))}
