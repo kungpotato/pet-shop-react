@@ -10,20 +10,22 @@ import { red } from '@mui/material/colors'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { Box, Button, Stack } from '@mui/material'
 import { ShoppingCart } from '@mui/icons-material'
-import { INFTItem } from '../App'
 import { getEtherContract } from '../libs/ethereum'
 import NFT from '../definition/NFT.json'
 import PotatoMarket from '../definition/PotatoMarket.json'
 import { PotatoMarketInstance } from '../../types/truffle-contracts'
 import { ethers } from 'ethers'
+import { INFTItem, setNFTs } from '../states/expore/reducer'
+import { useExpore } from '../states/expore/hook'
+import { useAppDispatch } from '../states/hooks'
 
 interface ICardItem {
   data: INFTItem
-  loadNFTs?: () => Promise<void>
   isForSale?: boolean
 }
 
-export const CardItem = ({ data, loadNFTs, isForSale = true }: ICardItem) => {
+export const CardItem = ({ data, isForSale = true }: ICardItem) => {
+  const { loadNFTs, loadMyNFTs } = useExpore()
   const handleClick = async () => {
     const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
@@ -35,8 +37,9 @@ export const CardItem = ({ data, loadNFTs, isForSale = true }: ICardItem) => {
       gasPrice: '20000000000'
     })
     await (createMarketSale as any).wait()
-    if (loadNFTs) {
+    if (isForSale) {
       loadNFTs()
+      loadMyNFTs()
     }
   }
 

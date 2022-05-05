@@ -1,138 +1,26 @@
 import './style.css'
 
-import { chainChanged, getMetamask } from './libs/metamask'
-// import { getEtherContract } from './libs/ethereum'
-import Adoption from './definition/Adoption.json'
-import PotatoMarket from './definition/PotatoMarket.json'
-import NFT from './definition/NFT.json'
-import { AdoptionInstance, PotatoMarketInstance, NFTInstance } from '../types/truffle-contracts'
-import { contractEvent, getChainId, getContractEvent, getWeb3Contract } from './libs/web3'
-
-import { useEffect, useState } from 'react'
+import React from 'react'
 import { MoralisProvider } from 'react-moralis'
-import { getEtherContract } from './libs/ethereum'
-import Moralis from 'moralis'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { routes } from './routes'
 import { MyAppBar } from './components/Appbar'
 
-export interface INFTItem {
-  price: string
-  itemId: number
-  seller: string
-  owner: string
-  image: any
-  name: any
-  description: any
-}
-
 function App(): JSX.Element {
-  let count = 0
-  const [nfts, setNfts] = useState<INFTItem[]>([])
-  const [accounts, setAccounts] = useState<string[]>([])
-
-  const getMetamaskAccount = async () => {
-    const accounts = await getMetamask()
-
-    const chainId = await getChainId()
-    if (chainId !== 1337) {
-      console.log('incurrect chain')
-    }
-
-    return accounts
-  }
-
-  async function adopt() {
-    // const contract = await getEtherContract(Adoption)
-    const contract = (await getEtherContract(Adoption)) as unknown as AdoptionInstance
-    const adopt = await contract.adopt(count.toString())
-    await adopt.wait()
-
-    count += 1
-    console.log(count)
-
-    // Get the value from the contract to prove it worked.
-    let getAdopters = await contract?.methods.getAdopters()
-    getAdopters = await (getAdopters as any).call()
-
-    console.log({ getAdopters })
-
-    const events = await getContractEvent(contract as any, contractEvent.Log)
-    console.log({ events })
-  }
-
-  chainChanged(async (id) => {
-    if (id !== 1337) {
-      console.log('incurrect chain')
-      setNfts([])
-    } else {
-      loadNFTs()
-    }
-  })
-
-  useEffect(() => {
-    getMetamaskAccount().then((data) => {
-      setAccounts(data)
-      loadNFTs()
-    })
-  }, [])
-
-  async function loadNFTs() {
-    const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
-    const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
-    const marketItems = (await marketContract?.fetchMarketItems()) ?? []
-
-    const items = await Promise.all(
-      marketItems.map(async (i) => {
-        const tokenUri = await ntfContract?.tokenURI(i.tokenId)
-
-        const query = new Moralis.Query('potatoNFTMarket')
-        query.equalTo('itemId', i.itemId.toNumber())
-        const res = await query.find()
-        const data = JSON.parse(res[0].get('data'))
-
-        const item = {
-          price: i.price.toString(),
-          itemId: i.itemId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
-          image: tokenUri,
-          name: data['name'],
-          description: data['description']
-        }
-        return item
-      })
-    )
-
-    setNfts(items)
-  }
-
-  async function buyNft(nft: INFTItem) {
-    const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
-    // const ntfContract = (await getWeb3Contract(NFT)) as unknown as NFTInstance
-    // const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-    // const networkId = await getChainId()
-    const transaction = await marketContract.createMarketSale(NFT.networks[1337].address, nft.itemId, {
-      value: nft.price.toString()
-    })
-    await transaction.wait()
-    loadNFTs()
-  }
-
   return (
-    <BrowserRouter>
-      <MoralisProvider
-        serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
-        appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
-      >
-        <MyAppBar accounts={accounts} loadNFTs={loadNFTs} />
+    <MoralisProvider
+      serverUrl="https://jqffj1drjnzm.usemoralis.com:2053/server"
+      appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
+    >
+      <BrowserRouter>
+        <MyAppBar />
         <Routes>
           {routes.map((e, i) => (
-            <Route key={i} path={e.path} element={e.element({ nfts, loadNFTs })} />
+            <Route key={i} path={e.path} element={e.element()} />
           ))}
         </Routes>
-      </MoralisProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </MoralisProvider>
   )
 }
 

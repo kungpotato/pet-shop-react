@@ -1,20 +1,38 @@
-import { Box } from '@mui/material'
-import { INFTItem } from '../App'
+import { Box, Grid } from '@mui/material'
+import { useEffect } from 'react'
 import { CardItem } from '../components/Card'
+import { chainChanged } from '../libs/metamask'
+import { getMetamaskAccount, useExpore } from '../states/expore/hook'
 
-export interface IExpore {
-  nfts: INFTItem[]
-  loadNFTs: () => Promise<void>
-}
+export const Expore = (): JSX.Element => {
+  const { nfts, loadNFTs, clearNFTs } = useExpore()
 
-export const Expore = ({ nfts, loadNFTs }: IExpore): JSX.Element => {
+  useEffect(() => {
+    getMetamaskAccount().then((data) => {
+      if (data[0]) {
+        loadNFTs()
+      }
+    })
+  }, [])
+
+  chainChanged(async (id) => {
+    if (id !== 1337) {
+      console.log('incurrect chain')
+      clearNFTs()
+    } else {
+      loadNFTs()
+    }
+  })
+
   return (
-    <Box p={4} display="flex">
-      {nfts.map((e, i) => (
-        <Box p={2} key={i}>
-          <CardItem data={e} loadNFTs={loadNFTs} />
-        </Box>
-      ))}
+    <Box p={4} sx={{ flexGrow: 1 }}>
+      <Grid container spacing={1}>
+        {nfts.map((e, i) => (
+          <Grid item xs={3} key={i}>
+            <CardItem data={e} />
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   )
 }

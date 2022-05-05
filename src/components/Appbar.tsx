@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -18,25 +18,26 @@ import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts
 import { getEtherContract } from '../libs/ethereum'
 import { Link } from 'react-router-dom'
 import { routes } from '../routes'
+import { useExpore } from '../states/expore/hook'
+import { useAppDispatch } from '../states/hooks'
+import { setNFTs } from '../states/expore/reducer'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
-interface IAppbar {
-  accounts: string[]
-  loadNFTs: () => Promise<void>
-}
+
 interface IformInput {
   price: string
   name: string
   description: string
 }
 
-export const MyAppBar = ({ accounts, loadNFTs }: IAppbar) => {
+export const MyAppBar = () => {
+  const { loadNFTs } = useExpore()
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
 
   const formInput: IformInput = {
     name: faker.company.companyName(),
     description: faker.commerce.productDescription(),
-    price: '1'
+    price: '2'
   }
   const [fileTarget, setFileTarget] = useState()
   const { saveFile } = useMoralisFile()
@@ -53,8 +54,6 @@ export const MyAppBar = ({ accounts, loadNFTs }: IAppbar) => {
         })
     }
   }
-  // const formInput:IformInput = { name: faker.name.findName(), description: faker.commerce.productDescription(), price: '1' }
-  // const fileUrl = 'https://f.ptcdn.info/597/057/000/p8r9139wrXaBEIVEurv-o.jpg'
 
   const createMarket = async () => {
     if (fileTarget) {
