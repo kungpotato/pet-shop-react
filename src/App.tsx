@@ -15,7 +15,7 @@ function App(): JSX.Element {
         <MyAppBar />
         <Routes>
           {routes.map((e, i) => (
-            <Route key={i} path={e.path} element={e.element()} />
+            <Route key={i} path={e.path} element={e.element} />
           ))}
         </Routes>
       </BrowserRouter>
