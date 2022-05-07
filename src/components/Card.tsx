@@ -66,9 +66,9 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
       <CardMedia component="img" height="150" image={data.image} />
       <CardContent>
         {isForSale && <Box>{`${ethers.utils.formatUnits(data.price, 'ether')} PTT`}</Box>}
-        <Typography variant="body2" color="text.secondary">
+        {/* <Typography variant="body2" color="text.secondary">
           {data.description}
-        </Typography>
+        </Typography> */}
       </CardContent>
       <CardActions disableSpacing>
         {isForSale && (
