@@ -7,6 +7,7 @@ import Moralis from 'moralis'
 import { getMetamask } from '../../libs/metamask'
 import { getChainId } from '../../libs/web3'
 import { useAppDispatch, useAppSelector } from '../hooks'
+import { useCallback } from 'react'
 
 const loadNFTs = async () => {
   const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
@@ -85,19 +86,24 @@ export const useExpore = () => {
 
   return {
     nfts,
-    loadNFTs: () => {
+    mynfts,
+    loadNFTs: useCallback(() => {
       loadNFTs().then((val) => {
+        console.log(`loadNFTs==>${val}`)
         dispatch(setNFTs(val))
       })
-    },
+    }, [dispatch]),
     clearNFTs: () => {
       dispatch(setNFTs([]))
     },
-    mynfts,
     loadMyNFTs: () => {
       loadMyNFTs().then((val) => {
+        console.log(`loadMyNFTs==>${val}`)
         dispatch(setMyNFTs(val))
       })
+    },
+    clearMyNFTs: () => {
+      dispatch(setMyNFTs([]))
     }
   }
 }

@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { Box, Grid } from '@mui/material'
 import { CardItem } from '../components/Card'
-import { accountChanged } from '../libs/metamask'
+import { accountChanged, chainChanged } from '../libs/metamask'
 import { getMetamaskAccount, useExpore } from '../states/expore/hook'
 
 export const MyItem = (): JSX.Element => {
-  const { mynfts, loadMyNFTs } = useExpore()
+  const { mynfts, loadMyNFTs, clearMyNFTs } = useExpore()
 
   useEffect(() => {
     getMetamaskAccount().then((data) => {
@@ -18,6 +18,15 @@ export const MyItem = (): JSX.Element => {
   accountChanged((ac) => {
     console.log(ac)
     loadMyNFTs()
+  })
+
+  chainChanged(async (id) => {
+    if (id !== 1337) {
+      console.log('incurrect chain')
+      clearMyNFTs()
+    } else {
+      loadMyNFTs()
+    }
   })
 
   return (

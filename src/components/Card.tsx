@@ -15,9 +15,8 @@ import NFT from '../definition/NFT.json'
 import PotatoMarket from '../definition/PotatoMarket.json'
 import { PotatoMarketInstance } from '../../types/truffle-contracts'
 import { ethers } from 'ethers'
-import { INFTItem, setNFTs } from '../states/expore/reducer'
+import { INFTItem } from '../states/expore/reducer'
 import { useExpore } from '../states/expore/hook'
-import { useAppDispatch } from '../states/hooks'
 
 interface ICardItem {
   data: INFTItem

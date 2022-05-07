@@ -19,8 +19,6 @@ import { getEtherContract } from '../libs/ethereum'
 import { Link } from 'react-router-dom'
 import { routes } from '../routes'
 import { useExpore } from '../states/expore/hook'
-import { useAppDispatch } from '../states/hooks'
-import { setNFTs } from '../states/expore/reducer'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 
