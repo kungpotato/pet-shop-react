@@ -1,6 +1,5 @@
 import './style.css'
 
-import React from 'react'
 import { MoralisProvider } from 'react-moralis'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { routes } from './routes'

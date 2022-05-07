@@ -1,31 +1,39 @@
 import { useEffect } from 'react'
 import { Box, Grid } from '@mui/material'
 import { CardItem } from '../components/Card'
-import { accountChanged, chainChanged } from '../libs/metamask'
-import { getMetamaskAccount, useExpore } from '../states/expore/hook'
+import { accountChanged, chainChanged, getMetamaskAccount } from '../libs/metamask'
+import { useAppDispatch, useAppSelector } from '../states/hooks'
+import { loadMyNFTs } from '../services'
+import { setMyNFTs } from '../states/expore/reducer'
 
 export const MyItem = (): JSX.Element => {
-  const { mynfts, loadMyNFTs, clearMyNFTs } = useExpore()
+  const { mynfts } = useAppSelector((state) => state.expore)
+  const dispatch = useAppDispatch()
+
+  function getNFTsData() {
+    loadMyNFTs().then((data) => {
+      dispatch(setMyNFTs(data))
+    })
+  }
 
   useEffect(() => {
-    getMetamaskAccount().then((data) => {
-      if (data[0]) {
-        loadMyNFTs()
+    getMetamaskAccount().then((accounts) => {
+      if (accounts && accounts[0]) {
+        getNFTsData()
       }
     })
   }, [])
 
   accountChanged((ac) => {
-    console.log(ac)
-    loadMyNFTs()
+    getNFTsData()
   })
 
   chainChanged(async (id) => {
     if (id !== 1337) {
       console.log('incurrect chain')
-      clearMyNFTs()
+      dispatch(setMyNFTs([]))
     } else {
-      loadMyNFTs()
+      getNFTsData()
     }
   })
 

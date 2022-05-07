@@ -1,15 +1,11 @@
-import { getEtherContract } from '../../libs/ethereum'
-import { INFTItem, setMyNFTs, setNFTs } from './reducer'
-import PotatoMarket from '../../definition/PotatoMarket.json'
-import NFT from '../../definition/NFT.json'
-import { NFTInstance, PotatoMarketInstance } from '../../../types/truffle-contracts'
 import Moralis from 'moralis'
-import { getMetamask } from '../../libs/metamask'
-import { getChainId } from '../../libs/web3'
-import { useAppDispatch, useAppSelector } from '../hooks'
-import { useCallback } from 'react'
+import { getEtherContract } from '../libs/ethereum'
+import { INFTItem } from '../states/expore/reducer'
+import PotatoMarket from '../definition/PotatoMarket.json'
+import NFT from '../definition/NFT.json'
+import { NFTInstance, PotatoMarketInstance } from '../../types/truffle-contracts'
 
-const loadNFTs = async () => {
+export const loadNFTs = async () => {
   const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
   const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
   const marketItems = (await marketContract?.fetchMarketItems()) ?? []
@@ -35,11 +31,11 @@ const loadNFTs = async () => {
       return item
     })
   )
-
+  console.log(`loadNFTs==>${items}`)
   return items
 }
 
-async function loadMyNFTs() {
+export async function loadMyNFTs() {
   const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
   const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
   const marketItems = (await marketContract?.fetchMyNfts()) ?? []
@@ -65,45 +61,6 @@ async function loadMyNFTs() {
       return item
     })
   )
-
+  console.log(`loadMyNFTs==>${items}`)
   return items
-}
-
-export const getMetamaskAccount = async () => {
-  const accounts = await getMetamask()
-
-  const chainId = await getChainId()
-  if (chainId !== 1337) {
-    console.log('incurrect chain')
-  }
-
-  return accounts
-}
-
-export const useExpore = () => {
-  const { nfts, mynfts } = useAppSelector((state) => state.expore)
-  const dispatch = useAppDispatch()
-
-  return {
-    nfts,
-    mynfts,
-    loadNFTs: useCallback(() => {
-      loadNFTs().then((val) => {
-        console.log(`loadNFTs==>${val}`)
-        dispatch(setNFTs(val))
-      })
-    }, [dispatch]),
-    clearNFTs: () => {
-      dispatch(setNFTs([]))
-    },
-    loadMyNFTs: () => {
-      loadMyNFTs().then((val) => {
-        console.log(`loadMyNFTs==>${val}`)
-        dispatch(setMyNFTs(val))
-      })
-    },
-    clearMyNFTs: () => {
-      dispatch(setMyNFTs([]))
-    }
-  }
 }

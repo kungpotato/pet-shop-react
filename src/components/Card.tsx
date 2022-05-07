@@ -15,8 +15,9 @@ import NFT from '../definition/NFT.json'
 import PotatoMarket from '../definition/PotatoMarket.json'
 import { PotatoMarketInstance } from '../../types/truffle-contracts'
 import { ethers } from 'ethers'
-import { INFTItem } from '../states/expore/reducer'
-import { useExpore } from '../states/expore/hook'
+import { INFTItem, setMyNFTs, setNFTs } from '../states/expore/reducer'
+import { loadMyNFTs, loadNFTs } from '../services'
+import { useAppDispatch } from '../states/hooks'
 
 interface ICardItem {
   data: INFTItem
@@ -24,7 +25,8 @@ interface ICardItem {
 }
 
 export const CardItem = ({ data, isForSale = true }: ICardItem) => {
-  const { loadNFTs, loadMyNFTs } = useExpore()
+  const dispatch = useAppDispatch()
+
   const handleClick = async () => {
     const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
     // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
@@ -37,8 +39,12 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
     })
     await (createMarketSale as any).wait()
     if (isForSale) {
-      loadNFTs()
-      loadMyNFTs()
+      loadNFTs().then((data) => {
+        dispatch(setNFTs(data))
+      })
+      loadMyNFTs().then((data) => {
+        dispatch(setMyNFTs(data))
+      })
     }
   }
 

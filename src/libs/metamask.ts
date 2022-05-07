@@ -1,3 +1,5 @@
+import { getChainId } from './web3'
+
 declare global {
   interface Window {
     ethereum?: EthereumProvider
@@ -26,13 +28,25 @@ export interface EthereumProvider {
   on: <T extends keyof eventMap>(event: keyof eventMap, handler: (data: eventResult<T>) => void) => void
 }
 
-export const getMetamask = async (): Promise<string[]> => {
+const getMetamask = async (): Promise<string[]> => {
   if (typeof window.ethereum !== 'undefined') {
     const { ethereum } = window
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
     return accounts
   }
   return []
+}
+
+export const getMetamaskAccount = async () => {
+  const accounts = await getMetamask()
+
+  const chainId = await getChainId()
+
+  if (chainId !== 1337) {
+    console.log('incurrect chain')
+  }
+
+  return accounts
 }
 
 export const chainChanged = (callback?: (chainId: number) => void): void => {

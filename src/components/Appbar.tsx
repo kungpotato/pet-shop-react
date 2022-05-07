@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -18,7 +18,9 @@ import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts
 import { getEtherContract } from '../libs/ethereum'
 import { Link } from 'react-router-dom'
 import { routes } from '../routes'
-import { useExpore } from '../states/expore/hook'
+import { useAppDispatch } from '../states/hooks'
+import { setNFTs } from '../states/expore/reducer'
+import { loadNFTs } from '../services'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 
@@ -29,8 +31,8 @@ interface IformInput {
 }
 
 export const MyAppBar = () => {
-  const { loadNFTs } = useExpore()
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
+  const dispatch = useAppDispatch()
 
   const formInput: IformInput = {
     name: faker.company.companyName(),
@@ -39,19 +41,6 @@ export const MyAppBar = () => {
   }
   const [fileTarget, setFileTarget] = useState()
   const { saveFile } = useMoralisFile()
-
-  const login = async () => {
-    if (!isAuthenticated) {
-      await authenticate({ signingMessage: 'Log in using Moralis' })
-        .then(function (user) {
-          console.log('logged in user:', user)
-          console.log(user?.get('ethAddress'))
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
-  }
 
   const createMarket = async () => {
     if (fileTarget) {
@@ -111,7 +100,11 @@ export const MyAppBar = () => {
       )
 
       await (makeMarketItem as any).wait()
-      loadNFTs()
+
+      loadNFTs().then((data) => {
+        dispatch(setNFTs(data))
+      })
+
       setFileTarget(undefined)
     } catch (error) {
       console.log('Error: ', error)
@@ -151,7 +144,21 @@ export const MyAppBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton sx={{ p: 0 }} onClick={login}>
+              <IconButton
+                sx={{ p: 0 }}
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    authenticate({ signingMessage: 'Log in using Moralis' })
+                      .then(function (user) {
+                        console.log('logged in user:', user)
+                        console.log(user?.get('ethAddress'))
+                      })
+                      .catch(function (error) {
+                        console.log(error)
+                      })
+                  }
+                }}
+              >
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
