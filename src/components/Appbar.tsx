@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 // import AppBar from '@mui/material/AppBar'
 // import Box from '@mui/material/Box'
 // import Toolbar from '@mui/material/Toolbar'
@@ -37,12 +37,19 @@ export const MyAppBar = () => {
   const dispatch = useAppDispatch()
   const { NFTContract, potatoMarketContract } = useContractJson()
 
+  useEffect(() => {
+    if (isAuthenticated && user && user.id) {
+      setWalletName(user.id)
+    }
+  }, [isAuthenticated, user])
+
   const formInput: IformInput = {
     name: faker.company.companyName(),
     description: faker.commerce.productDescription(),
     price: '2'
   }
   const [fileTarget, setFileTarget] = useState()
+  const [walletName, setWalletName] = useState('')
   const [open, setOpen] = useState(false)
   const { saveFile } = useMoralisFile()
 
@@ -130,7 +137,9 @@ export const MyAppBar = () => {
   }
 
   const openConnectWalletModal = () => {
-    setOpen(!open)
+    if (walletName.length === 0) {
+      setOpen(!open)
+    }
   }
 
   const connectWallet = () => {
@@ -138,8 +147,13 @@ export const MyAppBar = () => {
     if (!isAuthenticated) {
       authenticate({ signingMessage: 'Log in using Moralis' })
         .then(function (user) {
-          console.log('logged in user:', user)
-          console.log(user?.get('ethAddress'))
+          if (user) {
+            console.log('logged in user:', user)
+            const address = user.get('ethAddress')
+            setWalletName(address.id)
+            console.log(user?.get('ethAddress'))
+            setOpen(false)
+          }
         })
         .catch(function (error) {
           console.log(error)
@@ -148,6 +162,12 @@ export const MyAppBar = () => {
   }
 
   const CustomGrid = Grid as any
+
+  const addressSec = (address: string) => {
+    const first = address.slice(0, 2)
+    const sec = address.slice(address.length - 4)
+    return first + '...' + sec
+  }
 
   return (
     <Fragment>
@@ -176,7 +196,8 @@ export const MyAppBar = () => {
 
             <Menu.Item as='a'>
               <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
-                Connect Wallet
+                {walletName && walletName.length > 0 && <Icon name='ethereum' />}
+                {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
               </Button>
             </Menu.Item>
           </Menu.Menu>
@@ -194,7 +215,7 @@ export const MyAppBar = () => {
         <Modal.Content>
           <Card centered={true} style={{ boxShadow: 'none', background: "#0000" }} >
             <Card.Content style={{ background: 'var(--main-gradient)' }}>
-              <Card.Header>Connect Wallet</Card.Header>
+              <Card.Header style={{ color: '#fff' }}>Connect Wallet</Card.Header>
             </Card.Content>
             <Card.Content style={{ background: '#383241' }}>
               <CustomGrid >
