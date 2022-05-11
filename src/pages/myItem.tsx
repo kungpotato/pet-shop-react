@@ -6,11 +6,13 @@ import { useAppDispatch, useAppSelector } from '../states/hooks'
 import { loadMyNFTs } from '../services'
 import { setMyNFTs } from '../states/expore/reducer'
 import { useContractJson } from '../hooks/contracts'
+import { useMoralis } from 'react-moralis'
 
 export const MyItem = (): JSX.Element => {
   const { mynfts } = useAppSelector((state) => state.expore)
   const dispatch = useAppDispatch()
   const { potatoMarketContract, NFTContract } = useContractJson()
+  const { authenticate, isAuthenticated } = useMoralis()
 
   const getNFTsData = useCallback(() => {
     if (potatoMarketContract && NFTContract) {
@@ -21,12 +23,12 @@ export const MyItem = (): JSX.Element => {
   }, [potatoMarketContract, NFTContract])
 
   useEffect(() => {
-    getMetamaskAccount().then((accounts) => {
-      if (accounts && accounts[0]) {
+    if (!isAuthenticated) {
+      authenticate({ signingMessage: 'Log in using Moralis' }).then((val) => {
         getNFTsData()
-      }
-    })
-  }, [getNFTsData])
+      })
+    }
+  }, [getNFTsData, isAuthenticated])
 
   accountChanged((ac) => {
     getNFTsData()

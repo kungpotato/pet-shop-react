@@ -1,5 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import { useCallback, useEffect } from 'react'
+import { useMoralis } from 'react-moralis'
 import { CardItem } from '../components/Card'
 import { useContractJson } from '../hooks/contracts'
 import { chainChanged, getMetamaskAccount } from '../libs/metamask'
@@ -11,6 +12,7 @@ export const Expore = (): JSX.Element => {
   const { nfts } = useAppSelector((state) => state.expore)
   const dispatch = useAppDispatch()
   const { potatoMarketContract, NFTContract } = useContractJson()
+  const { authenticate, isAuthenticated } = useMoralis()
 
   const getNFTsData = useCallback(() => {
     if (potatoMarketContract && NFTContract) {
@@ -21,12 +23,12 @@ export const Expore = (): JSX.Element => {
   }, [potatoMarketContract, NFTContract])
 
   useEffect(() => {
-    getMetamaskAccount().then((accounts) => {
-      if (accounts && accounts[0]) {
+    if (!isAuthenticated) {
+      authenticate({ signingMessage: 'Log in using Moralis' }).then((val) => {
         getNFTsData()
-      }
-    })
-  }, [getNFTsData])
+      })
+    }
+  }, [getNFTsData, isAuthenticated])
 
   chainChanged(async (id) => {
     if (id !== 1337) {
