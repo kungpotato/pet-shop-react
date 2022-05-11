@@ -21,6 +21,7 @@ import { routes } from '../routes'
 import { useAppDispatch } from '../states/hooks'
 import { setNFTs } from '../states/expore/reducer'
 import { loadNFTs } from '../services'
+import { secret } from '../../secret'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 
@@ -62,8 +63,8 @@ export const MyAppBar = () => {
   const createSale = async (url: string) => {
     try {
       const { name, description } = formInput
-      const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
-      const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
+      const marketContract = (await getEtherContract(PotatoMarket, '')) as unknown as PotatoMarketInstance
+      const ntfContract = (await getEtherContract(NFT, '')) as unknown as NFTInstance
 
       const mintToken = await ntfContract.mintToken(url)
 
@@ -90,14 +91,9 @@ export const MyAppBar = () => {
 
       const listingPrice = await marketContract?.getListingPrice()
 
-      const makeMarketItem = await marketContract?.makeMarketItem(
-        NFT.networks[1337].address,
-        itemId,
-        price.toString(),
-        {
-          value: listingPrice.toString()
-        }
-      )
+      const makeMarketItem = await marketContract?.makeMarketItem(secret.nftContractAddress, itemId, price.toString(), {
+        value: listingPrice.toString()
+      })
 
       await (makeMarketItem as any).wait()
 

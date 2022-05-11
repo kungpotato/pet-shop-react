@@ -18,6 +18,7 @@ import { ethers } from 'ethers'
 import { INFTItem, setMyNFTs, setNFTs } from '../states/expore/reducer'
 import { loadMyNFTs, loadNFTs } from '../services'
 import { useAppDispatch } from '../states/hooks'
+import { secret } from '../../secret'
 
 interface ICardItem {
   data: INFTItem
@@ -28,11 +29,14 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   const dispatch = useAppDispatch()
 
   const handleClick = async () => {
-    const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
+    const marketContract = (await getEtherContract(
+      PotatoMarket,
+      secret.marketContractAddress
+    )) as unknown as PotatoMarketInstance
     // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
     const price = ethers.utils.formatUnits(data.price, 'wei')
 
-    const createMarketSale = await marketContract.createMarketSale(NFT.networks[1337].address, data.itemId, {
+    const createMarketSale = await marketContract.createMarketSale(secret.nftContractAddress, data.itemId, {
       value: price.toString(),
       gasLimit: '6721975',
       gasPrice: '20000000000'

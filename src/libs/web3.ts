@@ -18,16 +18,16 @@ export const getChainId = async (): Promise<number | undefined> => {
   return provider?.eth.net.getId()
 }
 
-export const getWeb3Contract = async (contractDefinition: Record<string, any>): Promise<Contract | null> => {
+export const getWeb3Contract = async (
+  contractDefinition: Record<string, any>,
+  address: string
+): Promise<Contract | null> => {
   const provider = await getWeb3Provider()
   const networkId = await getChainId()
   console.log({ networkId })
 
   if (provider && networkId) {
-    const contract = new provider.eth.Contract(
-      contractDefinition['abi'],
-      contractDefinition.networks[networkId]?.address
-    )
+    const contract = new provider.eth.Contract(contractDefinition['abi'], address)
     return contract
   }
   return null

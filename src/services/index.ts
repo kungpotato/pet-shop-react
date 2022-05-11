@@ -4,10 +4,14 @@ import { INFTItem } from '../states/expore/reducer'
 import PotatoMarket from '../definition/PotatoMarket.json'
 import NFT from '../definition/NFT.json'
 import { NFTInstance, PotatoMarketInstance } from '../../types/truffle-contracts'
+import { secret } from '../../secret'
 
 export const loadNFTs = async () => {
-  const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
-  const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
+  const marketContract = (await getEtherContract(
+    PotatoMarket,
+    secret.marketContractAddress
+  )) as unknown as PotatoMarketInstance
+  const ntfContract = (await getEtherContract(NFT, secret.nftContractAddress)) as unknown as NFTInstance
   const marketItems = (await marketContract?.fetchMarketItems()) ?? []
 
   const items = await Promise.all(
@@ -36,8 +40,11 @@ export const loadNFTs = async () => {
 }
 
 export async function loadMyNFTs() {
-  const marketContract = (await getEtherContract(PotatoMarket)) as unknown as PotatoMarketInstance
-  const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
+  const marketContract = (await getEtherContract(
+    PotatoMarket,
+    secret.marketContractAddress
+  )) as unknown as PotatoMarketInstance
+  const ntfContract = (await getEtherContract(NFT, secret.nftContractAddress)) as unknown as NFTInstance
   const marketItems = (await marketContract?.fetchMyNfts()) ?? []
 
   const items = await Promise.all(
