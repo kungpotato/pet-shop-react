@@ -12,8 +12,7 @@ import { ethers } from 'ethers'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
 import Moralis from 'moralis'
-import PotatoMarket from '../definition/PotatoMarket.json'
-import NFT from '../definition/NFT.json'
+
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
 import { Link } from 'react-router-dom'
@@ -21,10 +20,10 @@ import { routes } from '../routes'
 import { useAppDispatch } from '../states/hooks'
 import { setNFTs } from '../states/expore/reducer'
 import { loadNFTs } from '../services'
-import { secret } from '../secret'
+import { config } from '../config'
+import { useContractJson } from '../hooks/contracts'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
-
 interface IformInput {
   price: string
   name: string
@@ -34,6 +33,7 @@ interface IformInput {
 export const MyAppBar = () => {
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
   const dispatch = useAppDispatch()
+  const { NFTContract, potatoMarketContract } = useContractJson()
 
   const formInput: IformInput = {
     name: faker.company.companyName(),
@@ -63,45 +63,56 @@ export const MyAppBar = () => {
   const createSale = async (url: string) => {
     try {
       const { name, description } = formInput
-      const marketContract = (await getEtherContract(PotatoMarket, '')) as unknown as PotatoMarketInstance
-      const ntfContract = (await getEtherContract(NFT, '')) as unknown as NFTInstance
+      if (potatoMarketContract && NFTContract) {
+        const marketContract = (await getEtherContract(
+          potatoMarketContract,
+          config.marketContractAddress
+        )) as unknown as PotatoMarketInstance
+        const ntfContract = (await getEtherContract(NFTContract, config.nftContractAddress)) as unknown as NFTInstance
 
-      const mintToken = await ntfContract.mintToken(url)
+        const mintToken = await ntfContract.mintToken(url)
 
-      const tx = await (mintToken as any).wait()
+        const tx = await (mintToken as any).wait()
 
-      const event = tx.events[0]
-      const value = event.args[2]
-      const itemId = value.toNumber()
+        const event = tx.events[0]
+        const value = event.args[2]
+        const itemId = value.toNumber()
 
-      const data = JSON.stringify({
-        url: url,
-        name,
-        description
-      })
+        const data = JSON.stringify({
+          url: url,
+          name,
+          description
+        })
 
-      const obj = new Moralis.Object('potatoNFTMarket')
-      obj.set('itemId', itemId)
-      obj.set('data', data)
-      await obj.save()
+        const obj = new Moralis.Object('potatoNFTMarket')
+        obj.set('itemId', itemId)
+        obj.set('data', data)
+        await obj.save()
 
-      const price = ethers.utils.parseUnits(formInput.price, 'ether')
+        const price = ethers.utils.parseUnits(formInput.price, 'ether')
+        console.log({ price })
 
-      /* then list the item for sale on the marketplace */
+        /* then list the item for sale on the marketplace */
 
-      const listingPrice = await marketContract?.getListingPrice()
+        const listingPrice = await marketContract?.getListingPrice()
 
-      const makeMarketItem = await marketContract?.makeMarketItem(secret.nftContractAddress, itemId, price.toString(), {
-        value: listingPrice.toString()
-      })
+        const makeMarketItem = await marketContract?.makeMarketItem(
+          config.nftContractAddress,
+          itemId,
+          price.toString(),
+          {
+            value: listingPrice.toString()
+          }
+        )
 
-      await (makeMarketItem as any).wait()
+        await (makeMarketItem as any).wait()
 
-      loadNFTs().then((data) => {
-        dispatch(setNFTs(data))
-      })
+        loadNFTs(potatoMarketContract, NFTContract).then((data) => {
+          dispatch(setNFTs(data))
+        })
 
-      setFileTarget(undefined)
+        setFileTarget(undefined)
+      }
     } catch (error) {
       console.log('Error: ', error)
     }
@@ -143,6 +154,8 @@ export const MyAppBar = () => {
               <IconButton
                 sx={{ p: 0 }}
                 onClick={() => {
+                  console.log('process.env.NODE_ENV==>', process.env.NODE_ENV)
+
                   if (!isAuthenticated) {
                     authenticate({ signingMessage: 'Log in using Moralis' })
                       .then(function (user) {

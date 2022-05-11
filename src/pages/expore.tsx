@@ -1,6 +1,7 @@
 import { Box, Grid } from '@mui/material'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { CardItem } from '../components/Card'
+import { useContractJson } from '../hooks/contracts'
 import { chainChanged, getMetamaskAccount } from '../libs/metamask'
 import { loadNFTs } from '../services'
 import { setNFTs } from '../states/expore/reducer'
@@ -9,12 +10,15 @@ import { useAppDispatch, useAppSelector } from '../states/hooks'
 export const Expore = (): JSX.Element => {
   const { nfts } = useAppSelector((state) => state.expore)
   const dispatch = useAppDispatch()
+  const { potatoMarketContract, NFTContract } = useContractJson()
 
-  function getNFTsData() {
-    loadNFTs().then((data) => {
-      dispatch(setNFTs(data))
-    })
-  }
+  const getNFTsData = useCallback(() => {
+    if (potatoMarketContract && NFTContract) {
+      loadNFTs(potatoMarketContract, NFTContract).then((data) => {
+        dispatch(setNFTs(data))
+      })
+    }
+  }, [potatoMarketContract, NFTContract])
 
   useEffect(() => {
     getMetamaskAccount().then((accounts) => {
@@ -22,7 +26,7 @@ export const Expore = (): JSX.Element => {
         getNFTsData()
       }
     })
-  }, [])
+  }, [getNFTsData])
 
   chainChanged(async (id) => {
     if (id !== 1337) {

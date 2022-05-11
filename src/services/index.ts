@@ -1,17 +1,16 @@
 import Moralis from 'moralis'
 import { getEtherContract } from '../libs/ethereum'
 import { INFTItem } from '../states/expore/reducer'
-import PotatoMarket from '../definition/PotatoMarket.json'
-import NFT from '../definition/NFT.json'
-import { NFTInstance, PotatoMarketInstance } from '../../types/truffle-contracts'
-import { secret } from '../secret'
 
-export const loadNFTs = async () => {
+import { NFTInstance, PotatoMarketInstance } from '../../types/truffle-contracts'
+import { config } from '../config'
+
+export const loadNFTs = async (market: Record<string, any>, nft: Record<string, any>) => {
   const marketContract = (await getEtherContract(
-    PotatoMarket,
-    secret.marketContractAddress
+    market,
+    config.marketContractAddress
   )) as unknown as PotatoMarketInstance
-  const ntfContract = (await getEtherContract(NFT, secret.nftContractAddress)) as unknown as NFTInstance
+  const ntfContract = (await getEtherContract(nft, config.nftContractAddress)) as unknown as NFTInstance
   const marketItems = (await marketContract?.fetchMarketItems()) ?? []
 
   const items = await Promise.all(
@@ -39,12 +38,12 @@ export const loadNFTs = async () => {
   return items
 }
 
-export async function loadMyNFTs() {
+export async function loadMyNFTs(market: Record<string, any>, nft: Record<string, any>) {
   const marketContract = (await getEtherContract(
-    PotatoMarket,
-    secret.marketContractAddress
+    market,
+    config.marketContractAddress
   )) as unknown as PotatoMarketInstance
-  const ntfContract = (await getEtherContract(NFT, secret.nftContractAddress)) as unknown as NFTInstance
+  const ntfContract = (await getEtherContract(nft, config.nftContractAddress)) as unknown as NFTInstance
   const marketItems = (await marketContract?.fetchMyNfts()) ?? []
 
   const items = await Promise.all(

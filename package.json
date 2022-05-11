@@ -58,10 +58,11 @@
     "test-contract": "truffle test --debug",
     "eject": "react-scripts eject",
     "format": "prettier --config ./.prettierrc --write {,*/**/}*.{ts,tsx,json}",
-    "complie": "truffle complie --network=ganache",
-    "deploy": "truffle deploy --network ropsten",
-    "console": "truffle console --network ropsten",
-    "migrate": "truffle migrate",
+    "complie": "truffle complie --network=ropsten",
+    "deploy": "truffle deploy --network=ropsten",
+    "console": "truffle console --network=ropsten",
+    "migrate": "truffle migrate --network=ganache --reset",
+    "migrate-testnet":"truffle migrate --reset --network=ropsten --compile-none",
     "generate": "truffle compile && typechain --target=truffle-v5 './src/definition/**/*.json'"
   },
   "eslintConfig": {
