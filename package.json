@@ -37,6 +37,8 @@
     "react-router-dom": "6.3.0",
     "react-scripts": "4.0.3",
     "redux-persist": "^6.0.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.1.2",
     "styled-components": "^5.3.5",
     "truffle": "^5.5.13",
     "typechain": "^8.0.0",
@@ -62,7 +64,7 @@
     "deploy": "truffle deploy --network=ropsten",
     "console": "truffle console --network=ropsten",
     "migrate": "truffle migrate --network=ganache --reset",
-    "migrate-testnet":"truffle migrate --reset --network=ropsten --compile-none",
+    "migrate-testnet": "truffle migrate --reset --network=ropsten --compile-none",
     "generate": "truffle compile && typechain --target=truffle-v5 './src/definition/**/*.json'"
   },
   "eslintConfig": {

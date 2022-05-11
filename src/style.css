@@ -1,4 +1,30 @@
 body {
-  padding: 0px;
-  margin: 0px;
+    padding: 0px !important;
+    margin: 0px !important;
+    background: #1b1c1d !important;
+}
+
+.ui.secondary.inverted.pointing.menu .active.item {
+    border-color: #108dff !important;
+}
+
+div,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+span,
+strong {
+    color: #fff;
+}
+
+:root {
+    /* --main-color: #108cff; */
+    --active-color: #108dff;
+    --active-background: #1a2e4b;
+    --main-gradient: linear-gradient(139.73deg, rgb(49, 61, 92) 0%, rgb(61, 42, 84) 100%);
 }

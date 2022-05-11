@@ -4,6 +4,7 @@ import App from './App'
 import store from './states'
 import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
+import 'semantic-ui-css/semantic.min.css'
 
 const AppWrapper = () => {
   return (

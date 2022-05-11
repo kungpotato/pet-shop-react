@@ -1,21 +1,21 @@
-import { useState } from 'react'
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import Tooltip from '@mui/material/Tooltip'
+import { Fragment, useState } from 'react'
+// import AppBar from '@mui/material/AppBar'
+// import Box from '@mui/material/Box'
+// import Toolbar from '@mui/material/Toolbar'
+// import IconButton from '@mui/material/IconButton'
+// import Typography from '@mui/material/Typography'
+// import Container from '@mui/material/Container'
+// import Avatar from '@mui/material/Avatar'
+// import Tooltip from '@mui/material/Tooltip'
 import { ethers } from 'ethers'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
 import Moralis from 'moralis'
+import { Button, Card, Container, Divider, Feed, Grid, Header, Icon, Input, Menu, Modal, Popup, Segment } from 'semantic-ui-react'
 
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { routes } from '../routes'
 import { useAppDispatch } from '../states/hooks'
 import { setNFTs } from '../states/expore/reducer'
@@ -31,6 +31,8 @@ interface IformInput {
 }
 
 export const MyAppBar = () => {
+  const history = useNavigate()
+
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
   const dispatch = useAppDispatch()
   const { NFTContract, potatoMarketContract } = useContractJson()
@@ -41,6 +43,7 @@ export const MyAppBar = () => {
     price: '2'
   }
   const [fileTarget, setFileTarget] = useState()
+  const [open, setOpen] = useState(false)
   const { saveFile } = useMoralisFile()
 
   const createMarket = async () => {
@@ -122,58 +125,175 @@ export const MyAppBar = () => {
     setFileTarget(e.target.files[0])
   }
 
+  const HomeButton = (path: string) => {
+    history(path)
+  }
+
+  const openConnectWalletModal = () => {
+    setOpen(!open)
+  }
+
+  const connectWallet = () => {
+    console.log('>>>', isAuthenticated)
+    if (!isAuthenticated) {
+      authenticate({ signingMessage: 'Log in using Moralis' })
+        .then(function (user) {
+          console.log('logged in user:', user)
+          console.log(user?.get('ethAddress'))
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+  }
+
+  const CustomGrid = Grid as any
+
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}>
+    <Fragment>
+      <Menu inverted={true} size='huge' secondary pointing>
+        <Container fluid={true} >
+          <Menu.Item >
+            <img style={{ marginRight: '8px' }} alt="logo" src='/images/potato.gif' />
             Potato NFT Market
-          </Typography>
+          </Menu.Item>
+          <Menu.Item style={{ height: '100%' }}>
+            <Input style={{ color: '#000' }} icon='search' placeholder='Search' />
+          </Menu.Item>
+          <Menu.Menu position='right'>
+            {
+              routes.map((page, i) => (
+                <Menu.Item style={{ height: '100%' }}
+                  name={page.title}
+                  onClick={() => HomeButton(page.path)}
+                  active={i === 0}
+                />
+              ))
+            }
+            <Menu.Item as='a' style={{ height: '100%' }}>
+              <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
+            </Menu.Item>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {routes.map((page) => (
-              <Link to={`/${page.path}`} key={page.title}>
-                <Button sx={{ my: 2, color: 'white', display: 'block' }}>{page.title}</Button>
-              </Link>
-            ))}
-          </Box>
-          <input type="file" onChange={fileInput} />
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{ my: 2, color: 'white', display: 'block' }}
-              onClick={createMarket}
-            >
-              listing
-            </Button>
-          </Box>
+            <Menu.Item as='a'>
+              <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
+                Connect Wallet
+              </Button>
+            </Menu.Item>
+          </Menu.Menu>
+        </Container>
+      </Menu>
+      <Divider inverted />
+      <Modal
+        basic
+        dimmer='blurring'
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        open={open}
+        size='small'
+      >
+        <Modal.Content>
+          <Card centered={true} style={{ boxShadow: 'none', background: "#0000" }} >
+            <Card.Content style={{ background: 'var(--main-gradient)' }}>
+              <Card.Header>Connect Wallet</Card.Header>
+            </Card.Content>
+            <Card.Content style={{ background: '#383241' }}>
+              <CustomGrid >
+                <Grid.Row columns={2} style={{ paddingBottom: '0' }}>
+                  <Grid.Column style={{ textAlign: 'center' }}>
+                    <Button icon style={{ width: "85px", height: '85px', background: "#0000" }} onClick={connectWallet}>
+                      <div style={{ display: "block" }}>
+                        <img style={{ display: "block", margin: 'auto', marginBottom: '8px' }} src="/images/wallert_metamask.webp" alt="" />
+                        Metamask
+                      </div>
+                    </Button>
+                  </Grid.Column>
+                  <Grid.Column style={{ textAlign: 'center' }}>
+                    <Button icon style={{ width: "85px", height: '85px', background: "#0000" }}>
+                      <div style={{ display: "block" }}>
+                        <img style={{ display: "block", margin: 'auto', marginBottom: '8px' }} src="/images/binance_wallet.webp" alt="" />
+                        Binance
+                      </div>
+                    </Button>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={2}>
+                  <Grid.Column style={{ textAlign: 'center' }}>
+                    <Button icon style={{ width: "85px", height: '85px', background: "#0000" }}>
+                      <div style={{ display: "block" }}>
+                        <img style={{ display: "block", margin: 'auto', marginBottom: '8px' }} src="/images/wallet_connect.webp" alt="" />
+                        Wallet
+                      </div>
+                    </Button>
+                  </Grid.Column>
+                </Grid.Row>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton
-                sx={{ p: 0 }}
-                onClick={() => {
-                  console.log('process.env.NODE_ENV==>', process.env.NODE_ENV)
+              </CustomGrid>
+            </Card.Content>
+          </Card>
+        </Modal.Content>
+        {/* <Modal.Actions>
+          <Button basic color='red' inverted onClick={() => setOpen(false)}>
+            <Icon name='remove' /> No
+          </Button>
+          <Button color='green' inverted onClick={() => setOpen(false)}>
+            <Icon name='checkmark' /> Yes
+          </Button>
+        </Modal.Actions> */}
+      </Modal>
+    </Fragment>
+    // <AppBar position="static">
+    //   <Container maxWidth="xl">
+    //     <Toolbar disableGutters>
+    //       <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}>
+    //         Potato NFT Market
+    //       </Typography>
 
-                  if (!isAuthenticated) {
-                    authenticate({ signingMessage: 'Log in using Moralis' })
-                      .then(function (user) {
-                        console.log('logged in user:', user)
-                        console.log(user?.get('ethAddress'))
-                      })
-                      .catch(function (error) {
-                        console.log(error)
-                      })
-                  }
-                }}
-              >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+    //       <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+    //           {
+    //   routes.map((page) => (
+    //     <Link to={`/${page.path}`} key={page.title}>
+    //       <Button sx={{ my: 2, color: 'white', display: 'block' }}>{page.title}</Button>
+    //     </Link>
+    //   ))
+    // }
+    //       </Box>
+    //       <input type="file" onChange={fileInput} />
+    //       <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+    //         {/* <Button
+    //           variant="outlined"
+    //           color="secondary"
+    //           sx={{ my: 2, color: 'white', display: 'block' }}
+    //           onClick={createMarket}
+    //         >
+    //           listing
+    //         </Button> */}
+    //       </Box>
+
+    //       <Box sx={{ flexGrow: 0 }}>
+    //         <Tooltip title="Open settings">
+    //           <IconButton
+    //             sx={{ p: 0 }}
+    //             onClick={() => {
+    //               console.log('process.env.NODE_ENV==>', process.env.NODE_ENV)
+
+    //               if (!isAuthenticated) {
+    //                 authenticate({ signingMessage: 'Log in using Moralis' })
+    //                   .then(function (user) {
+    //                     console.log('logged in user:', user)
+    //                     console.log(user?.get('ethAddress'))
+    //                   })
+    //                   .catch(function (error) {
+    //                     console.log(error)
+    //                   })
+    //               }
+    //             }}
+    //           >
+    //             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+    //           </IconButton>
+    //         </Tooltip>
+    //       </Box>
+    //     </Toolbar>
+    //   </Container>
+    // </AppBar>
   )
 }
