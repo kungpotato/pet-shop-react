@@ -49,7 +49,9 @@ module.exports = {
     development: {
       host: '127.0.0.1', // Localhost (default: none)
       port: 7545, // Standard Ethereum port (default: none)
-      network_id: '*' // Any network (default: none),
+      network_id: '*', // Any network (default: none),
+      gasLimit: 6721975,
+      gasPrice: 20000000000
     },
     ganache: {
       host: '127.0.0.1',
@@ -73,7 +75,7 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     ropsten: {
-      provider: () => new HDWalletProvider(MNEMONIC, NODE),
+      provider: () => new HDWalletProvider({mnemonic:{phrase:MNEMONIC}, providerOrUrl:NODE}),
       network_id: 3, // Ropsten's id
       gas: 5500000, // Ropsten has a lower block limit than mainnet
       confirmations: 2, // # of confs to wait between deployments. (default: 0)
