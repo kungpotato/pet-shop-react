@@ -147,7 +147,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -166,7 +167,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -190,7 +192,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -203,7 +206,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -222,7 +226,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -310,7 +315,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -323,7 +329,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -342,7 +349,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -18070,10 +18078,17 @@
       "links": {},
       "address": "0x07ec43998D2E777545192181641650cD83D1a14A",
       "transactionHash": "0xe407a29c190e9a9d944ac5af0ab832545f840b30e86a012881dfc550d5833901"
+    },
+    "80001": {
+      "events": {},
+      "links": {},
+      "address": "0xBfE449c2eca65D4B451DEDB8ba4E1D9CBeb3de0E",
+      "transactionHash": "0xbd8fe454216c71832eeb9ce34d882ed1588db44df4e157bcdb102f0af41d74f7"
     }
   },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-11T01:47:46.170Z",
+  "updatedAt": "2022-05-11T02:33:00.977Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {

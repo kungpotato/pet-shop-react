@@ -18,7 +18,7 @@ import { ethers } from 'ethers'
 import { INFTItem, setMyNFTs, setNFTs } from '../states/expore/reducer'
 import { loadMyNFTs, loadNFTs } from '../services'
 import { useAppDispatch } from '../states/hooks'
-import { secret } from '../../secret'
+import { secret } from '../secret'
 
 interface ICardItem {
   data: INFTItem

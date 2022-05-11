@@ -24,7 +24,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider')
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-const NODE = 'https://speedy-nodes-nyc.moralis.io/9f134c4e9ad9bc3a108d8a3b/eth/ropsten'
+const NODE = 'https://speedy-nodes-nyc.moralis.io/9f134c4e9ad9bc3a108d8a3b/polygon/mumbai'
 const MNEMONIC = 'rare virtual visit fantasy doctor secret foil clean degree harsh name cloth'
 const account = '0x2DC4fDd312df7E7C23218c218c8D48E069878100'
 
@@ -75,8 +75,8 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     ropsten: {
-      provider: () => new HDWalletProvider({mnemonic:{phrase:MNEMONIC}, providerOrUrl:NODE}),
-      network_id: 3, // Ropsten's id
+      provider: () => new HDWalletProvider({ mnemonic: { phrase: MNEMONIC }, providerOrUrl: NODE }),
+      network_id: 80001, // Ropsten's id
       gas: 5500000, // Ropsten has a lower block limit than mainnet
       confirmations: 2, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)

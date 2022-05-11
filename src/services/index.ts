@@ -4,7 +4,7 @@ import { INFTItem } from '../states/expore/reducer'
 import PotatoMarket from '../definition/PotatoMarket.json'
 import NFT from '../definition/NFT.json'
 import { NFTInstance, PotatoMarketInstance } from '../../types/truffle-contracts'
-import { secret } from '../../secret'
+import { secret } from '../secret'
 
 export const loadNFTs = async () => {
   const marketContract = (await getEtherContract(

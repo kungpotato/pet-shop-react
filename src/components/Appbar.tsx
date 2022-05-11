@@ -21,7 +21,7 @@ import { routes } from '../routes'
 import { useAppDispatch } from '../states/hooks'
 import { setNFTs } from '../states/expore/reducer'
 import { loadNFTs } from '../services'
-import { secret } from '../../secret'
+import { secret } from '../secret'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 
