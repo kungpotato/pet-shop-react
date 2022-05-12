@@ -11,7 +11,7 @@ import { ethers } from 'ethers'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
 import Moralis from 'moralis'
-import { Button, Card, Container, Divider, Feed, Grid, Header, Icon, Input, Menu, Modal, Popup, Segment } from 'semantic-ui-react'
+import { Button, Card, Container, Dimmer, Divider, Feed, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment, Sidebar } from 'semantic-ui-react'
 
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
@@ -22,6 +22,7 @@ import { setNFTs } from '../states/expore/reducer'
 import { loadNFTs } from '../services'
 import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
+
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 interface IformInput {
@@ -50,15 +51,20 @@ export const MyAppBar = () => {
   }
   const [fileTarget, setFileTarget] = useState()
   const [walletName, setWalletName] = useState('')
+
+  const [visible, setVisible] = useState(false)
+
   const [open, setOpen] = useState(false)
   const { saveFile } = useMoralisFile()
 
   const createMarket = async () => {
+    console.log('>>>', fileTarget)
     if (fileTarget) {
       saveFile((fileTarget as any).name, fileTarget, {
         type: 'base64',
         saveIPFS: true,
         onSuccess: async (result) => {
+          console.log('result', result)
           const url = (result as any).ipfs()
 
           if (result) {
@@ -71,6 +77,7 @@ export const MyAppBar = () => {
   }
 
   const createSale = async (url: string) => {
+    console.log('url', url)
     try {
       const { name, description } = formInput
       if (potatoMarketContract && NFTContract) {
@@ -163,19 +170,29 @@ export const MyAppBar = () => {
 
   const CustomGrid = Grid as any
 
+  const CustomImage = Image as any
+
   const addressSec = (address: string) => {
     const first = address.slice(0, 2)
     const sec = address.slice(address.length - 4)
     return first + '...' + sec
   }
 
+  const showSidebarWallet = () => {
+    setVisible(!visible)
+  }
+
   return (
     <Fragment>
+      {/* <Dimmer.Dimmable as={Segment} blurring dimmed={visible}>
+        <Dimmer visible={visible} onClickOutside={() => setVisible(false)} />
+
+      </Dimmer.Dimmable> */}
       <Menu inverted={true} size='huge' secondary pointing>
         <Container fluid={true} >
           <Menu.Item >
             <img style={{ marginRight: '8px' }} alt="logo" src='/images/potato.gif' />
-            Potato NFT Market
+            Potato NFT
           </Menu.Item>
           <Menu.Item style={{ height: '100%' }}>
             <Input style={{ color: '#000' }} icon='search' placeholder='Search' />
@@ -194,16 +211,86 @@ export const MyAppBar = () => {
               <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
             </Menu.Item>
 
-            <Menu.Item as='a'>
+            {walletName.length === 0 && <Menu.Item as='a'>
+              {/* {addressSec(walletName)} */}
               <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
                 {walletName && walletName.length > 0 && <Icon name='ethereum' />}
                 {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
               </Button>
+            </Menu.Item>}
+            <Menu.Item as='a'>
+              {walletName && walletName.length > 0 &&
+                <div style={{ borderRadius: '50%', border: '1px solid #ffffff38', width: '45px' }}>
+                  <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`https://robohash.org/${walletName}.jpeg?set=set1&size=150x150`} />
+                </div>
+              }
+            </Menu.Item>
+            <Menu.Item as='a' style={{ height: '100%' }} onClick={showSidebarWallet}>
+              {walletName && walletName.length > 0 &&
+                <div style={{ width: '32px' }}>
+                  <CustomImage size='mini' style={{ width: '32px' }} spaced='right' src='/images/wallet.webp' />
+                </div>
+              }
             </Menu.Item>
           </Menu.Menu>
         </Container>
       </Menu>
       <Divider inverted />
+      <input type="file" onChange={fileInput} />
+
+      <Button
+        variant="outlined"
+        sx={{ my: 2, color: 'white', display: 'block' }}
+        onClick={createMarket}
+      >
+        listing
+      </Button>
+
+      <Sidebar
+        as={Menu}
+        animation='overlay'
+        direction='right'
+
+        icon='labeled'
+        inverted
+        onHide={() => setVisible(false)}
+        vertical
+        visible={visible}
+        width='thin'
+      >
+        <Menu.Item as='a'>
+          <Icon name='home' />
+          Home
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='gamepad' />
+          Games
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='camera' />
+          Channels
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='camera' />
+          Channels
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='camera' />
+          Channels
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='camera' />
+          Channels
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='camera' />
+          Channels
+        </Menu.Item>
+      </Sidebar>
+
+
+
+
       <Modal
         basic
         dimmer='blurring'

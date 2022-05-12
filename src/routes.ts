@@ -1,4 +1,5 @@
 import React from 'react'
+import { Create } from './pages/Create'
 import { Expore } from './pages/expore'
 import { MyItem } from './pages/myItem'
 
@@ -10,5 +11,6 @@ interface IRoute {
 
 export const routes: IRoute[] = [
   { title: 'Expore', path: '', element: Expore },
-  { title: 'My item', path: 'my-item', element: MyItem }
+  { title: 'My item', path: 'my-item', element: MyItem },
+  { title: 'Create', path: 'create', element: Create }
 ]
