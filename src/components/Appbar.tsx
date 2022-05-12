@@ -40,7 +40,7 @@ export const MyAppBar = () => {
 
   useEffect(() => {
     if (isAuthenticated && user && user.id) {
-      setWalletName(user.id)
+      setWalletName(user && user.id ? user.id : '')
     }
   }, [isAuthenticated, user])
 
@@ -157,7 +157,7 @@ export const MyAppBar = () => {
           if (user) {
             console.log('logged in user:', user)
             const address = user.get('ethAddress')
-            setWalletName(address.id)
+            setWalletName(address && address.id ? address.id : '')
             console.log(user?.get('ethAddress'))
             setOpen(false)
           }
@@ -210,8 +210,8 @@ export const MyAppBar = () => {
             <Menu.Item as='a' style={{ height: '100%' }}>
               <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
             </Menu.Item>
-
-            {walletName.length === 0 && <Menu.Item as='a'>
+            {console.log('walletName', walletName)
+            }            {walletName.length === 0 && <Menu.Item as='a'>
               {/* {addressSec(walletName)} */}
               <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
                 {walletName && walletName.length > 0 && <Icon name='ethereum' />}
