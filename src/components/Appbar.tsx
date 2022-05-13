@@ -80,7 +80,10 @@ export const MyAppBar = () => {
     console.log('url', url)
     try {
       const { name, description } = formInput
+      console.log('potatoMarketContract', potatoMarketContract)
+      console.log('NFTContract', NFTContract)
       if (potatoMarketContract && NFTContract) {
+        console.log('xxxxx')
         const marketContract = (await getEtherContract(
           potatoMarketContract,
           config.marketContractAddress
@@ -88,8 +91,9 @@ export const MyAppBar = () => {
         const ntfContract = (await getEtherContract(NFTContract, config.nftContractAddress)) as unknown as NFTInstance
 
         const mintToken = await ntfContract.mintToken(url)
-
+        console.log('mint')
         const tx = await (mintToken as any).wait()
+        console.log('tx')
 
         const event = tx.events[0]
         const value = event.args[2]
