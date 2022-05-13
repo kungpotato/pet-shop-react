@@ -39,6 +39,7 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.5",
     "truffle": "^5.5.13",
+    "truffle-hdwallet-provider": "^1.0.17",
     "typechain": "^8.0.0",
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4",
@@ -62,7 +63,7 @@
     "deploy": "truffle deploy --network=ropsten",
     "console": "truffle console --network=ropsten",
     "migrate": "truffle migrate --network=ganache --reset",
-    "migrate-testnet":"truffle migrate --reset --network=ropsten --compile-none",
+    "migrate-testnet": "truffle migrate --reset --network=ropsten --compile-none",
     "generate": "truffle compile && typechain --target=truffle-v5 './public/definition/**/*.json'"
   },
   "eslintConfig": {
