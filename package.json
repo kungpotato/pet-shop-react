@@ -63,7 +63,7 @@
     "console": "truffle console --network=ropsten",
     "migrate": "truffle migrate --network=ganache --reset",
     "migrate-testnet":"truffle migrate --reset --network=ropsten --compile-none",
-    "generate": "truffle compile && typechain --target=truffle-v5 './src/definition/**/*.json'"
+    "generate": "truffle compile && typechain --target=truffle-v5 './public/definition/**/*.json'"
   },
   "eslintConfig": {
     "extends": [
