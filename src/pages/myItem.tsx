@@ -7,7 +7,7 @@ import { loadMyNFTs } from '../services'
 import { setMyNFTs } from '../states/expore/reducer'
 import { useContractJson } from '../hooks/contracts'
 
-export const MyItem = (): JSX.Element => {
+const MyItem: React.FC = () => {
   const { mynfts } = useAppSelector((state) => state.expore)
   const dispatch = useAppDispatch()
   const { potatoMarketContract, NFTContract } = useContractJson()
@@ -53,3 +53,5 @@ export const MyItem = (): JSX.Element => {
     </Box>
   )
 }
+
+export default MyItem

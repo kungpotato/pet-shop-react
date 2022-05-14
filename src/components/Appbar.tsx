@@ -7,36 +7,33 @@ import { Fragment, useEffect, useState } from 'react'
 // import Container from '@mui/material/Container'
 // import Avatar from '@mui/material/Avatar'
 // import Tooltip from '@mui/material/Tooltip'
-import { ethers } from 'ethers'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
-import Moralis from 'moralis'
 import { Button, Card, Container, Dimmer, Divider, Feed, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment, Sidebar } from 'semantic-ui-react'
 
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { routes } from '../routes'
 import { useAppDispatch } from '../states/hooks'
 import { setNFTs } from '../states/expore/reducer'
 import { loadNFTs } from '../services'
 import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
+import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
-interface IformInput {
-  price: string
-  name: string
-  description: string
-}
 
-export const MyAppBar = () => {
+
+export const MyAppBar = (props: any) => {
   const history = useNavigate()
+  const path = useLocation()
 
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
-  const dispatch = useAppDispatch()
-  const { NFTContract, potatoMarketContract } = useContractJson()
+
+
 
   useEffect(() => {
     if (isAuthenticated && user && user.id) {
@@ -44,104 +41,20 @@ export const MyAppBar = () => {
     }
   }, [isAuthenticated, user])
 
-  const formInput: IformInput = {
-    name: faker.company.companyName(),
-    description: faker.commerce.productDescription(),
-    price: '2'
-  }
-  const [fileTarget, setFileTarget] = useState()
+
+
   const [walletName, setWalletName] = useState('')
 
   const [visible, setVisible] = useState(false)
 
   const [open, setOpen] = useState(false)
-  const { saveFile } = useMoralisFile()
 
-  const createMarket = async () => {
-    console.log('>>>', fileTarget)
-    if (fileTarget) {
-      saveFile((fileTarget as any).name, fileTarget, {
-        type: 'base64',
-        saveIPFS: true,
-        onSuccess: async (result) => {
-          console.log('result', result)
-          const url = (result as any).ipfs()
 
-          if (result) {
-            createSale(url)
-          }
-        },
-        onError: (error) => console.log(error)
-      })
-    }
-  }
 
-  const createSale = async (url: string) => {
-    console.log('url', url)
-    try {
-      const { name, description } = formInput
-      console.log('potatoMarketContract', potatoMarketContract)
-      console.log('NFTContract', NFTContract)
-      if (potatoMarketContract && NFTContract) {
-        console.log('xxxxx')
-        const marketContract = (await getEtherContract(
-          potatoMarketContract,
-          config.marketContractAddress
-        )) as unknown as PotatoMarketInstance
-        const ntfContract = (await getEtherContract(NFTContract, config.nftContractAddress)) as unknown as NFTInstance
 
-        const mintToken = await ntfContract.mintToken(url)
-        console.log('mint')
-        const tx = await (mintToken as any).wait()
-        console.log('tx')
 
-        const event = tx.events[0]
-        const value = event.args[2]
-        const itemId = value.toNumber()
 
-        const data = JSON.stringify({
-          url: url,
-          name,
-          description
-        })
 
-        const obj = new Moralis.Object('potatoNFTMarket')
-        obj.set('itemId', itemId)
-        obj.set('data', data)
-        await obj.save()
-
-        const price = ethers.utils.parseUnits(formInput.price, 'ether')
-        console.log({ price })
-
-        /* then list the item for sale on the marketplace */
-
-        const listingPrice = await marketContract?.getListingPrice()
-
-        const makeMarketItem = await marketContract?.makeMarketItem(
-          config.nftContractAddress,
-          itemId,
-          price.toString(),
-          {
-            value: listingPrice.toString()
-          }
-        )
-
-        await (makeMarketItem as any).wait()
-
-        loadNFTs(potatoMarketContract, NFTContract).then((data) => {
-          dispatch(setNFTs(data))
-        })
-
-        setFileTarget(undefined)
-      }
-    } catch (error) {
-      console.log('Error: ', error)
-    }
-  }
-
-  const fileInput = (e: any) => {
-    setFileTarget(e.target.files[0])
-  }
 
   const HomeButton = (path: string) => {
     history(path)
@@ -154,15 +67,12 @@ export const MyAppBar = () => {
   }
 
   const connectWallet = () => {
-    console.log('>>>', isAuthenticated)
     if (!isAuthenticated) {
       authenticate({ signingMessage: 'Log in using Moralis' })
         .then(function (user) {
           if (user) {
-            console.log('logged in user:', user)
             const address = user.get('ethAddress')
             setWalletName(address && address.id ? address.id : '')
-            console.log(user?.get('ethAddress'))
             setOpen(false)
           }
         })
@@ -188,10 +98,6 @@ export const MyAppBar = () => {
 
   return (
     <Fragment>
-      {/* <Dimmer.Dimmable as={Segment} blurring dimmed={visible}>
-        <Dimmer visible={visible} onClickOutside={() => setVisible(false)} />
-
-      </Dimmer.Dimmable> */}
       <Menu inverted={true} size='huge' secondary pointing>
         <Container fluid={true} >
           <Menu.Item >
@@ -202,21 +108,25 @@ export const MyAppBar = () => {
             <Input style={{ color: '#000' }} icon='search' placeholder='Search' />
           </Menu.Item>
           <Menu.Menu position='right'>
-            {
-              routes.map((page, i) => (
-                <Menu.Item style={{ height: '100%' }}
-                  name={page.title}
-                  onClick={() => HomeButton(page.path)}
-                  active={i === 0}
-                />
-              ))
-            }
+            <Menu.Item style={{ height: '100%' }}
+              name='Expore'
+              onClick={() => HomeButton('/expore')}
+              active={path.pathname === '/expore'}
+            />
+            <Menu.Item style={{ height: '100%' }}
+              name='Myitem'
+              onClick={() => HomeButton('/myitem')}
+              active={path.pathname === '/myitem'}
+            />
+            <Menu.Item style={{ height: '100%' }}
+              name='Create'
+              onClick={() => HomeButton('/create')}
+              active={path.pathname === '/create'}
+            />
             <Menu.Item as='a' style={{ height: '100%' }}>
               <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
             </Menu.Item>
-            {console.log('walletName', walletName)
-            }            {walletName.length === 0 && <Menu.Item as='a'>
-              {/* {addressSec(walletName)} */}
+            {walletName.length === 0 && <Menu.Item as='a'>
               <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
                 {walletName && walletName.length > 0 && <Icon name='ethereum' />}
                 {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
@@ -240,15 +150,7 @@ export const MyAppBar = () => {
         </Container>
       </Menu>
       <Divider inverted />
-      <input type="file" onChange={fileInput} />
 
-      <Button
-        variant="outlined"
-        sx={{ my: 2, color: 'white', display: 'block' }}
-        onClick={createMarket}
-      >
-        listing
-      </Button>
 
       <Sidebar
         as={Menu}
