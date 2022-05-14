@@ -22,6 +22,7 @@ import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
+import { useScreenSize } from '../hooks/screenSize'
 
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
@@ -30,7 +31,7 @@ import { useLocation } from 'react-router-dom'
 export const MyAppBar = (props: any) => {
   const history = useNavigate()
   const path = useLocation()
-
+  const screenWidth = useScreenSize({ maxWidth: 1000 })
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
 
 
@@ -104,49 +105,54 @@ export const MyAppBar = (props: any) => {
             <img style={{ marginRight: '8px' }} alt="logo" src='/images/potato.gif' />
             Potato NFT
           </Menu.Item>
-          <Menu.Item style={{ height: '100%', width: '40%' }}>
-            <Input inverted fluid style={{ color: '#000' }} icon='search' placeholder='Search items, collections, and accounts' />
-          </Menu.Item>
-          <Menu.Menu position='right'>
-            <Menu.Item style={{ height: '100%' }}
-              name='Expore'
-              onClick={() => HomeButton('/expore')}
-              active={path.pathname === '/expore'}
-            />
-            <Menu.Item style={{ height: '100%' }}
-              name='Myitem'
-              onClick={() => HomeButton('/myitem')}
-              active={path.pathname === '/myitem'}
-            />
-            <Menu.Item style={{ height: '100%' }}
-              name='Create'
-              onClick={() => HomeButton('/create')}
-              active={path.pathname === '/create'}
-            />
-            <Menu.Item as='a' style={{ height: '100%' }}>
-              <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
+          {screenWidth && <Menu.Item position='right'>
+            <Button inverted icon='sidebar' onClick={showSidebarWallet} />
+          </Menu.Item>}
+          {!screenWidth && <Fragment>
+            <Menu.Item style={{ height: '100%', width: '40%' }}>
+              <Input inverted fluid style={{ color: '#000' }} icon='search' placeholder='Search items, collections, and accounts' />
             </Menu.Item>
-            {walletName.length === 0 && <Menu.Item as='a'>
-              <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
-                {walletName && walletName.length > 0 && <Icon name='ethereum' />}
-                {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
-              </Button>
-            </Menu.Item>}
-            <Menu.Item as='a'>
-              {walletName && walletName.length > 0 &&
-                <div style={{ borderRadius: '50%', border: '1px solid #ffffff38', width: '45px' }}>
-                  <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`https://robohash.org/${walletName}.jpeg?set=set1&size=150x150`} />
-                </div>
-              }
-            </Menu.Item>
-            <Menu.Item as='a' style={{ height: '100%' }} onClick={showSidebarWallet}>
-              {walletName && walletName.length > 0 &&
-                <div style={{ width: '32px' }}>
-                  <CustomImage size='mini' style={{ width: '32px' }} spaced='right' src='/images/wallet.webp' />
-                </div>
-              }
-            </Menu.Item>
-          </Menu.Menu>
+            <Menu.Menu position='right'>
+              <Menu.Item style={{ height: '100%' }}
+                name='Expore'
+                onClick={() => HomeButton('/expore')}
+                active={path.pathname === '/expore'}
+              />
+              <Menu.Item style={{ height: '100%' }}
+                name='Myitem'
+                onClick={() => HomeButton('/myitem')}
+                active={path.pathname === '/myitem'}
+              />
+              <Menu.Item style={{ height: '100%' }}
+                name='Create'
+                onClick={() => HomeButton('/create')}
+                active={path.pathname === '/create'}
+              />
+              <Menu.Item as='a' style={{ height: '100%' }}>
+                <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
+              </Menu.Item>
+              {walletName.length === 0 && <Menu.Item as='a'>
+                <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
+                  {walletName && walletName.length > 0 && <Icon name='ethereum' />}
+                  {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
+                </Button>
+              </Menu.Item>}
+              <Menu.Item as='a'>
+                {walletName && walletName.length > 0 &&
+                  <div style={{ borderRadius: '50%', border: '1px solid #ffffff38', width: '45px' }}>
+                    <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`https://robohash.org/${walletName}.jpeg?set=set1&size=150x150`} />
+                  </div>
+                }
+              </Menu.Item>
+              <Menu.Item as='a' style={{ height: '100%' }} onClick={showSidebarWallet}>
+                {walletName && walletName.length > 0 &&
+                  <div style={{ width: '32px' }}>
+                    <CustomImage size='mini' style={{ width: '32px' }} spaced='right' src='/images/wallet.webp' />
+                  </div>
+                }
+              </Menu.Item>
+            </Menu.Menu>
+          </Fragment>}
         </Container>
       </Menu>
       <Divider inverted style={{ marginBottom: "0" }} />
