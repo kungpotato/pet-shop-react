@@ -40,7 +40,6 @@ const MyItem: React.FC = () => {
       getNFTsData()
     }
   })
-
   return (
     <Box p={4} sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>

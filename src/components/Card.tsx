@@ -40,6 +40,8 @@ interface ICardItem {
 }
 
 export const CardItem = ({ data, isForSale = true }: ICardItem) => {
+  const { image, price, description, name, owner } = data
+
   const dispatch = useAppDispatch()
   const { potatoMarketContract, NFTContract } = useContractJson()
 
@@ -70,8 +72,6 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   }
 
 
-  console.log('data', data)
-  const { image, price, description, name, owner } = data
 
   return (
     <Card style={{ height: "23em", width: '100%' }}>
