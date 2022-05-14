@@ -48,9 +48,6 @@ function App(): JSX.Element {
                 </Suspense>
               }
             />
-            {/* {routes.map((e, i) => (
-              <Route key={i} path={e.path} element={e.element()} />
-            ))} */}
           </Routes>
         </AppContainer>
       </BrowserRouter>

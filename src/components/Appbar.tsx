@@ -104,8 +104,8 @@ export const MyAppBar = (props: any) => {
             <img style={{ marginRight: '8px' }} alt="logo" src='/images/potato.gif' />
             Potato NFT
           </Menu.Item>
-          <Menu.Item style={{ height: '100%' }}>
-            <Input style={{ color: '#000' }} icon='search' placeholder='Search' />
+          <Menu.Item style={{ height: '100%', width: '40%' }}>
+            <Input inverted fluid style={{ color: '#000' }} icon='search' placeholder='Search items, collections, and accounts' />
           </Menu.Item>
           <Menu.Menu position='right'>
             <Menu.Item style={{ height: '100%' }}
@@ -149,7 +149,7 @@ export const MyAppBar = (props: any) => {
           </Menu.Menu>
         </Container>
       </Menu>
-      <Divider inverted />
+      <Divider inverted style={{ marginBottom: "0" }} />
 
 
       <Sidebar
