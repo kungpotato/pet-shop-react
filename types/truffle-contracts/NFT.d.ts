@@ -36,6 +36,18 @@ export interface ApprovalForAll {
   };
 }
 
+export interface MintedNFT {
+  name: "MintedNFT";
+  args: {
+    minter: string;
+    tokenURI: string;
+    nftId: BN;
+    0: string;
+    1: string;
+    2: BN;
+  };
+}
+
 export interface Transfer {
   name: "Transfer";
   args: {
@@ -48,7 +60,7 @@ export interface Transfer {
   };
 }
 
-type AllEvents = Approval | ApprovalForAll | Transfer;
+type AllEvents = Approval | ApprovalForAll | MintedNFT | Transfer;
 
 export interface NFTInstance extends Truffle.ContractInstance {
   /**

@@ -3,7 +3,15 @@ import './style.css'
 import { MoralisProvider } from 'react-moralis'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { routes } from './routes'
-import { MyAppBar } from './components/Appbar'
+import { AppContainer } from './components/AppContainer'
+import { Create } from './pages/Create'
+import { lazy, Suspense } from 'react'
+import { Progress } from 'semantic-ui-react'
+
+const Expore = lazy(() => import("./pages/Expore"))
+const MyItem = lazy(() => import("./pages/MyItem"))
+
+const Loading = <Progress percent={100} size='tiny' active />
 
 function App(): JSX.Element {
   return (
@@ -12,12 +20,36 @@ function App(): JSX.Element {
       appId="iABVUKAeoEkI52Lnjt1dZrIgHuvo62ZHKk9qNDds"
     >
       <BrowserRouter>
-        <MyAppBar />
-        <Routes>
-          {routes.map((e, i) => (
-            <Route key={i} path={e.path} element={e.element()} />
-          ))}
-        </Routes>
+        <AppContainer>
+          <Routes>
+
+            <Route index element={<Create />} />
+            <Route
+              path="/expore"
+              element={
+                <Suspense fallback={Loading}>
+                  <Expore />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/myitem"
+              element={
+                <Suspense fallback={Loading}>
+                  <MyItem />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/create"
+              element={
+                <Suspense fallback={Loading}>
+                  <Create />
+                </Suspense>
+              }
+            />
+          </Routes>
+        </AppContainer>
       </BrowserRouter>
     </MoralisProvider>
   )
