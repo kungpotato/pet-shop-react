@@ -24,6 +24,7 @@ strong {
 
 :root {
     /* --main-color: #108cff; */
+    --darg-bg: #1b1c1d;
     --active-color: #108dff;
     --active-background: #1a2e4b;
     --main-gradient: linear-gradient(139.73deg, rgb(49, 61, 92) 0%, rgb(61, 42, 84) 100%);

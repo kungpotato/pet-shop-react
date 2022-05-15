@@ -6,7 +6,7 @@ import { loadMyNFTs, loadNFTs } from '../services'
 import { useAppDispatch } from '../states/hooks'
 import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
-import { Card, Icon } from 'semantic-ui-react'
+import { Button, Card, Icon, Rating } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 
 const Image = styled.img`
@@ -75,8 +75,8 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
 
   return (
     <Card style={{ height: "23em", width: '100%' }}>
-      <Image src={image} />
-      <Card.Content>
+      <Image src={image} loading="lazy" />
+      <Card.Content style={{ height: "1em" }}>
         <Header>{name}</Header>
         <Meta >
           {owner}
@@ -84,12 +84,19 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
         {/* <Description>
           {description}
         </Description> */}
+        <p style={{ color: '#2185d0', textAlign: 'right' }}>
+          <Icon name='ethereum' />
+          {parseFloat(price).toFixed(2)}
+        </p>
       </Card.Content>
       <Card.Content extra>
-        <a>
-          <Icon name='ethereum' />
-          {price}
-        </a>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Button color='green' basic size='mini' onClick={handleClick}>Buy now</Button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ color: '#00000026', textAlign: 'right' }}>0</span>
+            <Rating icon='heart' defaultRating={0} maxRating={1} />
+          </div>
+        </div>
       </Card.Content>
     </Card >
   )

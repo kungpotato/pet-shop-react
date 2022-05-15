@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { Button, Divider, Grid, Icon, Input, Label, Menu, Segment, Sidebar } from 'semantic-ui-react'
+import { Accordion, Button, Card, Divider, Feed, Grid, Icon, Input, Label, Menu, Segment, Sidebar } from 'semantic-ui-react'
 import { CardItem } from '../components/Card'
 import { useContractJson } from '../hooks/contracts'
 import { useScreenSize } from '../hooks/screenSize'
@@ -14,6 +14,7 @@ const Expore: React.FC = () => {
   const { potatoMarketContract, NFTContract } = useContractJson()
   const screenWidth = useScreenSize({ maxWidth: 1500 })
   const [showSidebar, setShowSidebar] = useState<boolean>(true)
+  const [activeIndex, setActiveIndex] = useState<boolean>(true)
 
 
 
@@ -43,11 +44,18 @@ const Expore: React.FC = () => {
   })
 
   const CustomGrid = Grid as any
+  const CustomFeed = Feed as any
 
   const handleShowSidebar = () => {
     setShowSidebar(!showSidebar)
   }
 
+  const expandCollection = () => {
+    console.log('....')
+    setActiveIndex(!activeIndex)
+  }
+
+  { console.log('////', activeIndex) }
   return (
     <Fragment>
       <Sidebar.Pushable style={{ height: 'calc(100vh - 108px)' }} >
@@ -72,35 +80,125 @@ const Expore: React.FC = () => {
                 Filter
                 <Icon name='angle left' />
               </Menu.Item>
-              <Menu.Item>
-                <Input icon='search' placeholder='Search...' />
-              </Menu.Item>
               <Menu.Item
                 name='inbox'
               // active={activeItem === 'inbox'}
               // onClick={this.handleItemClick}
               >
-                <Label color='teal'>1</Label>
-                Inbox
+                <Menu.Header>Price</Menu.Header>
+                <Menu.Menu>
+                  <Menu.Item
+                  >
+                    <CustomGrid>
+                      <Grid.Column mobile={7} style={{ paddingRight: '0' }}>
+                        <Input fluid={true} labelPosition='left' type='text' placeholder='Min'>
+                          <Label basic><Icon style={{ margin: 'auto' }} name='ethereum' /></Label>
+                          <input />
+                        </Input>
+                      </Grid.Column>
+                      <Grid.Column mobile={2}>
+                        <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                          to
+                        </div>
+                      </Grid.Column>
+                      <Grid.Column mobile={7} style={{ paddingLeft: '0' }}>
+                        <Input fluid={true} type='text' placeholder='Max'>
+                          <input />
+                        </Input>
+                      </Grid.Column>
+                      <Grid.Column mobile={16}>
+                        <Button color='blue' style={{ marginLeft: 'auto', display: 'block' }}>Apply</Button>
+                      </Grid.Column>
+                    </CustomGrid>
+                  </Menu.Item>
+                </Menu.Menu>
               </Menu.Item>
-
-              <Menu.Item
-                name='spam'
-              // active={activeItem === 'spam'}
-              // onClick={this.handleItemClick}
-              >
-                <Label>51</Label>
-                Spam
-              </Menu.Item>
-
-              <Menu.Item
-                name='updates'
-              // active={activeItem === 'updates'}
-              // onClick={this.handleItemClick}
-              >
-                <Label>1</Label>
-                Updates
-              </Menu.Item>
+              <Divider />
+              <Accordion as={Menu} vertical inverted fluid={true}>
+                <Menu.Item style={{ width: '100%' }}>
+                  <Accordion.Title
+                    style={{ marginBottom: '9px' }}
+                    active={activeIndex}
+                    index={0}
+                    onClick={expandCollection}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <h6 style={{ fontSize: '18px', margin: '0' }}>Collection</h6>
+                      <Icon name='angle down' />
+                    </div>
+                  </Accordion.Title>
+                  <Accordion.Content active={activeIndex} content={
+                    <Fragment>
+                      <Card fluid style={{ background: 'var(--darg-bg)' }}>
+                        <Card.Content style={{ padding: '6px 6px' }} >
+                          <CustomFeed >
+                            <Feed.Event >
+                              <Feed.Label style={{ margin: "auto" }} image='https://ipfs.moralis.io:2053/ipfs/Qmedfv8e95sqnNQ2Ks7w9pQUja2JCiuJqpxp8tFRXwbfjz' />
+                              <Feed.Content style={{ lineHeight: '1.8em' }} >
+                                <Feed.Summary style={{ color: "#fff" }}>
+                                  Takashiro
+                                  <Icon name='check circle' color='blue' />
+                                </Feed.Summary>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <Feed.Date style={{ color: "#ffffffb3" }} content='1 day ago' />
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon name='ethereum' size='small' />
+                                    <Feed.Date style={{ color: "#21ba45", height: '100%' }} content='2.00' />
+                                  </div>
+                                </div>
+                              </Feed.Content>
+                            </Feed.Event>
+                          </CustomFeed>
+                        </Card.Content>
+                      </Card>
+                      <Card fluid style={{ background: 'var(--darg-bg)' }}>
+                        <Card.Content style={{ padding: '6px 6px' }} >
+                          <CustomFeed >
+                            <Feed.Event >
+                              <Feed.Label style={{ margin: "auto" }} image='https://ipfs.moralis.io:2053/ipfs/Qmedfv8e95sqnNQ2Ks7w9pQUja2JCiuJqpxp8tFRXwbfjz' />
+                              <Feed.Content style={{ lineHeight: '1.8em' }} >
+                                <Feed.Summary style={{ color: "#fff" }}>
+                                  Takashiro
+                                  <Icon name='check circle' color='blue' />
+                                </Feed.Summary>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <Feed.Date style={{ color: "#ffffffb3" }} content='1 day ago' />
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon name='ethereum' size='small' />
+                                    <Feed.Date style={{ color: "#21ba45", height: '100%' }} content='2.00' />
+                                  </div>
+                                </div>
+                              </Feed.Content>
+                            </Feed.Event>
+                          </CustomFeed>
+                        </Card.Content>
+                      </Card>
+                      <Card fluid style={{ background: 'var(--darg-bg)' }}>
+                        <Card.Content style={{ padding: '6px 6px' }} >
+                          <CustomFeed >
+                            <Feed.Event >
+                              <Feed.Label style={{ margin: "auto" }} image='https://ipfs.moralis.io:2053/ipfs/Qmedfv8e95sqnNQ2Ks7w9pQUja2JCiuJqpxp8tFRXwbfjz' />
+                              <Feed.Content style={{ lineHeight: '1.8em' }} >
+                                <Feed.Summary style={{ color: "#fff" }}>
+                                  Takashiro
+                                  <Icon name='check circle' color='blue' />
+                                </Feed.Summary>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <Feed.Date style={{ color: "#ffffffb3" }} content='1 day ago' />
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon name='ethereum' size='small' />
+                                    <Feed.Date style={{ color: "#21ba45", height: '100%' }} content='2.00' />
+                                  </div>
+                                </div>
+                              </Feed.Content>
+                            </Feed.Event>
+                          </CustomFeed>
+                        </Card.Content>
+                      </Card>
+                    </Fragment>
+                  } />
+                </Menu.Item>
+              </Accordion>
             </Menu>}
 
         </Sidebar>
@@ -129,8 +227,8 @@ const Expore: React.FC = () => {
             </CustomGrid>
           </div>
         </Sidebar.Pusher>
-      </Sidebar.Pushable>
-    </Fragment>
+      </Sidebar.Pushable >
+    </Fragment >
   )
 }
 
