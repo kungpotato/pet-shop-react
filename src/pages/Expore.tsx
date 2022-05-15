@@ -203,29 +203,31 @@ const Expore: React.FC = () => {
 
         </Sidebar>
         <Sidebar.Pusher>
-          <Menu pointing inverted secondary size='massive' style={{ borderBottom: '1px solid #ffffff1a', borderRadius: '0' }}>
-            <Menu.Item
-              style={{ borderRadius: '0', }}
-              active={true}
-            >
-              Items
-            </Menu.Item>
-            <Menu.Item
-              style={{ borderRadius: '0', height: '52px' }}
-              active={false}
-            >
-              Activity
-            </Menu.Item>
-          </Menu>
-          <div style={{ padding: '8px' }}>
-            <CustomGrid style={{ width: showSidebar && !screenWidth ? 'calc(100vw - 350px)' : 'calc(100vw - 60px)' }}>
-              {nfts.map((e, i) => (
-                <Grid.Column mobile={8} tablet={5} largeScreen={4} computer={2}>
-                  <CardItem data={e} />
-                </Grid.Column>
-              ))}
-            </CustomGrid>
-          </div>
+          <Fragment>
+            <Menu pointing inverted secondary size='massive' style={{ borderBottom: '1px solid #ffffff1a', borderRadius: '0' }}>
+              <Menu.Item
+                style={{ borderRadius: '0', }}
+                active={true}
+              >
+                Items
+              </Menu.Item>
+              <Menu.Item
+                style={{ borderRadius: '0', height: '52px' }}
+                active={false}
+              >
+                Activity
+              </Menu.Item>
+            </Menu>
+            <div style={{ padding: '8px' }}>
+              <CustomGrid style={{ width: showSidebar && !screenWidth ? 'calc(100vw - 350px)' : 'calc(100vw - 60px)' }}>
+                {nfts.map((e, i) => (
+                  <Grid.Column mobile={8} tablet={5} largeScreen={4} computer={2}>
+                    <CardItem data={e} />
+                  </Grid.Column>
+                ))}
+              </CustomGrid>
+            </div>
+          </Fragment>
         </Sidebar.Pusher>
       </Sidebar.Pushable >
     </Fragment >
