@@ -104,7 +104,6 @@ export const MyAppBar = (props: any) => {
 
   const logoutWeb = () => {
     logout().then((res) => {
-      console.log('>>>>', res)
       showProfile()
       setWalletName('')
     }).catch((err) => console.log(err))
@@ -131,16 +130,11 @@ export const MyAppBar = (props: any) => {
                 onClick={() => HomeButton('/expore')}
                 active={path.pathname === '/expore'}
               />
-              <Menu.Item style={{ height: '100%' }}
-                name='Myitem'
-                onClick={() => HomeButton('/myitem')}
-                active={path.pathname === '/myitem'}
-              />
-              <Menu.Item style={{ height: '100%' }}
+              {walletName.length !== 0 && <Menu.Item style={{ height: '100%' }}
                 name='Create'
                 onClick={() => HomeButton('/create')}
                 active={path.pathname === '/create'}
-              />
+              />}
               <Menu.Item as='a' style={{ height: '100%' }}>
                 <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
               </Menu.Item>
@@ -303,7 +297,10 @@ export const MyAppBar = (props: any) => {
               name='Profile'
             />
             <Menu.Item
-              onClick={() => false}
+              onClick={() => {
+                HomeButton('/myitem')
+                showProfile()
+              }}
               name='My Items'
             />
             <Menu.Item

@@ -34,6 +34,14 @@ const Description = styled(Card.Description)({
   textOverflow: 'ellipsis'
 })
 
+const Price = styled.p({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  color: '#2185d0',
+  textAlign: 'right'
+})
+
 interface ICardItem {
   data: INFTItem
   isForSale?: boolean
@@ -74,24 +82,21 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
 
 
   return (
-    <Card style={{ height: "23em", width: '100%' }}>
+    <Card style={{ height: "23em", width: '100%' }} onClick={() => false}>
       <Image src={image} loading="lazy" />
       <Card.Content style={{ height: "1em" }}>
         <Header>{name}</Header>
         <Meta >
           {owner}
         </Meta>
-        {/* <Description>
-          {description}
-        </Description> */}
-        <p style={{ color: '#2185d0', textAlign: 'right' }}>
+        <Price >
           <Icon name='ethereum' />
           {parseFloat(price).toFixed(2)}
-        </p>
+        </Price>
       </Card.Content>
       <Card.Content extra>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Button color='green' basic size='mini' onClick={handleClick}>Buy now</Button>
+          <Button color='green' size='small' onClick={handleClick} style={{ background: '#0000', color: 'green', padding: '0' }}>Buy now</Button>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <span style={{ color: '#00000026', textAlign: 'right' }}>0</span>
             <Rating icon='heart' defaultRating={0} maxRating={1} />
