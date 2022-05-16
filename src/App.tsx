@@ -23,7 +23,6 @@ function App(): JSX.Element {
         <AppContainer>
           <Routes>
 
-            <Route index element={<Create />} />
             <Route
               path="/expore"
               element={
