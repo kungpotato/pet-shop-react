@@ -60,13 +60,10 @@ const Expore: React.FC = () => {
   }
 
   const expandCollection = () => {
-    console.log('....')
     setActiveIndex(!activeIndex)
   }
 
-  {
-    console.log('////', activeIndex)
-  }
+
   return (
     <Fragment>
       <Sidebar.Pushable style={{ height: 'calc(100vh - 108px)' }}>
@@ -104,8 +101,8 @@ const Expore: React.FC = () => {
               </Menu.Item>
               <Menu.Item
                 name="inbox"
-                // active={activeItem === 'inbox'}
-                // onClick={this.handleItemClick}
+              // active={activeItem === 'inbox'}
+              // onClick={this.handleItemClick}
               >
                 <Menu.Header>Price</Menu.Header>
                 <Menu.Menu>
