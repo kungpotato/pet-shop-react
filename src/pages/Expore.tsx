@@ -28,12 +28,13 @@ const Expore: React.FC = () => {
   const { potatoMarketContract, NFTContract } = useContractJson()
   const screenWidth = useScreenSize({ maxWidth: 1500 })
   const [showSidebar, setShowSidebar] = useState<boolean>(true)
-  const { isAuthenticated } = useMoralis()
+  const { isWeb3Enabled } = useMoralis()
   const [activeIndex, setActiveIndex] = useState<boolean>(true)
 
   const getNFTsData = useCallback(() => {
+    console.log({ isWeb3Enabled })
     if (potatoMarketContract && NFTContract) {
-      loadNFTs(potatoMarketContract, NFTContract, isAuthenticated).then((data) => {
+      loadNFTs(potatoMarketContract, NFTContract, isWeb3Enabled).then((data) => {
         dispatch(setNFTs(data))
       })
     }
