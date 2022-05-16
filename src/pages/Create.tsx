@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker'
 import react, { useState } from 'react'
 import { useMoralis, useMoralisFile } from 'react-moralis'
-import { Button, Container, Form, Icon, Input, Label, Reveal, TextArea } from 'semantic-ui-react'
+import { Button, Container, Form, Icon, Input, Label, Message, Reveal, TextArea } from 'semantic-ui-react'
 import { NFTInstance, PotatoMarketInstance } from '../../types/truffle-contracts'
 import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
@@ -133,7 +133,15 @@ export const Create = (): JSX.Element => {
                     {fileTarget && <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={URL.createObjectURL((fileTarget as any))} alt="" />}
                     {!fileTarget && <Icon name='camera' size='big' />}
                 </div> */}
-                <CustomReveal onClick={handleClick} animated='fade' style={{ width: '350px', cursor: 'pointer', height: '200px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px  dashed #fff', padding: '4px' }}>
+                <Message icon color='black' floating style={{ border: '1px solid #fff' }}>
+                    <Icon name='image outline' />
+                    <Message.Content>
+                        <Message.Header>Image, Video, Audio, or 3D Model</Message.Header>
+                        File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV, OGG, GLB, GLTF. Max size: 100 MB
+
+                    </Message.Content>
+                </Message>
+                <CustomReveal onClick={handleClick} animated='fade' style={{ width: '350px', cursor: 'pointer', height: '250px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px  dashed #fff', padding: '4px' }}>
                     <Reveal.Content visible style={{ width: '100%', height: '100%' }}>
                         {fileTarget && <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={URL.createObjectURL((fileTarget as any))} alt="" />}
                     </Reveal.Content>
