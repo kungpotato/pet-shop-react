@@ -15,8 +15,6 @@ const Expore: React.FC = () => {
   const screenWidth = useScreenSize({ maxWidth: 1500 })
   const [showSidebar, setShowSidebar] = useState<boolean>(true)
 
-
-
   const getNFTsData = useCallback(() => {
     if (potatoMarketContract && NFTContract) {
       loadNFTs(potatoMarketContract, NFTContract).then((data) => {
@@ -26,11 +24,7 @@ const Expore: React.FC = () => {
   }, [potatoMarketContract, NFTContract])
 
   useEffect(() => {
-    getMetamaskAccount().then((accounts) => {
-      if (accounts && accounts[0]) {
-        getNFTsData()
-      }
-    })
+    getNFTsData()
   }, [getNFTsData])
 
   chainChanged(async (id) => {
@@ -50,72 +44,83 @@ const Expore: React.FC = () => {
 
   return (
     <Fragment>
-      <Sidebar.Pushable style={{ height: 'calc(100vh - 108px)' }} >
+      <Sidebar.Pushable style={{ height: 'calc(100vh - 108px)' }}>
         <Sidebar
           width={showSidebar && !screenWidth ? 'wide' : 'very thin'}
           style={{ borderRight: '0.4px solid #ffffff1a', background: '#1b1c1d' }}
-          animation='push'
-          direction='left'
+          animation="push"
+          direction="left"
           visible={true}
         >
-          {!showSidebar || screenWidth ? <Menu inverted style={{ borderRadius: '0' }}>
-            <Menu.Item onClick={handleShowSidebar} style={{ width: '100%', justifyContent: 'center', display: 'flex', borderBottom: '1px solid #ffffff1a', height: '52px' }}>
-              <Icon name='filter' />
-            </Menu.Item>
-          </Menu>
-            : <Menu inverted vertical size='massive' style={{ borderRadius: '0' }}>
+          {!showSidebar || screenWidth ? (
+            <Menu inverted style={{ borderRadius: '0' }}>
               <Menu.Item
-                name='inbox'
+                onClick={handleShowSidebar}
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  display: 'flex',
+                  borderBottom: '1px solid #ffffff1a',
+                  height: '52px'
+                }}
+              >
+                <Icon name="filter" />
+              </Menu.Item>
+            </Menu>
+          ) : (
+            <Menu inverted vertical size="massive" style={{ borderRadius: '0' }}>
+              <Menu.Item
+                name="inbox"
                 // active={activeItem === 'inbox'}
                 onClick={handleShowSidebar}
               >
                 Filter
-                <Icon name='angle left' />
+                <Icon name="angle left" />
               </Menu.Item>
               <Menu.Item>
-                <Input icon='search' placeholder='Search...' />
+                <Input icon="search" placeholder="Search..." />
               </Menu.Item>
               <Menu.Item
-                name='inbox'
-              // active={activeItem === 'inbox'}
-              // onClick={this.handleItemClick}
+                name="inbox"
+                // active={activeItem === 'inbox'}
+                // onClick={this.handleItemClick}
               >
-                <Label color='teal'>1</Label>
+                <Label color="teal">1</Label>
                 Inbox
               </Menu.Item>
 
               <Menu.Item
-                name='spam'
-              // active={activeItem === 'spam'}
-              // onClick={this.handleItemClick}
+                name="spam"
+                // active={activeItem === 'spam'}
+                // onClick={this.handleItemClick}
               >
                 <Label>51</Label>
                 Spam
               </Menu.Item>
 
               <Menu.Item
-                name='updates'
-              // active={activeItem === 'updates'}
-              // onClick={this.handleItemClick}
+                name="updates"
+                // active={activeItem === 'updates'}
+                // onClick={this.handleItemClick}
               >
                 <Label>1</Label>
                 Updates
               </Menu.Item>
-            </Menu>}
-
+            </Menu>
+          )}
         </Sidebar>
         <Sidebar.Pusher>
-          <Menu pointing inverted secondary size='massive' style={{ borderBottom: '1px solid #ffffff1a', borderRadius: '0' }}>
-            <Menu.Item
-              style={{ borderRadius: '0', }}
-              active={true}
-            >
+          <Menu
+            pointing
+            inverted
+            secondary
+            size="massive"
+            style={{ borderBottom: '1px solid #ffffff1a', borderRadius: '0' }}
+          >
+            <Menu.Item style={{ borderRadius: '0' }} active={true}>
               Items
             </Menu.Item>
-            <Menu.Item
-              style={{ borderRadius: '0', height: '52px' }}
-              active={false}
-            >
+            <Menu.Item style={{ borderRadius: '0', height: '52px' }} active={false}>
               Activity
             </Menu.Item>
           </Menu>

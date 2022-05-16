@@ -88,7 +88,7 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
       <Card.Content extra>
         <a>
           <Icon name='ethereum' />
-          {price}
+          {ethers.utils.formatUnits(price,'ether').toString()}
         </a>
       </Card.Content>
     </Card >
