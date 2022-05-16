@@ -9,7 +9,7 @@ import { Fragment, useEffect, useState } from 'react'
 // import Tooltip from '@mui/material/Tooltip'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
-import { Button, Card, Container, Dimmer, Divider, Feed, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment, Sidebar } from 'semantic-ui-react'
+import { Button, Card, Container, Dimmer, Divider, Dropdown, Feed, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment, Sidebar } from 'semantic-ui-react'
 
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
@@ -46,9 +46,10 @@ export const MyAppBar = (props: any) => {
 
   const [walletName, setWalletName] = useState('')
 
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState<boolean>(false)
+  const [openProfile, setOpenProfile] = useState<boolean>(false)
 
 
 
@@ -97,6 +98,17 @@ export const MyAppBar = (props: any) => {
     setVisible(!visible)
   }
 
+  const showProfile = () => {
+    setOpenProfile(!openProfile)
+  }
+
+  const logoutWeb = () => {
+    logout().then((res) => {
+      showProfile()
+      setWalletName('')
+    }).catch((err) => console.log(err))
+  }
+
   return (
     <Fragment>
       <Menu inverted={true} size='huge' secondary pointing>
@@ -118,16 +130,11 @@ export const MyAppBar = (props: any) => {
                 onClick={() => HomeButton('/expore')}
                 active={path.pathname === '/expore'}
               />
-              <Menu.Item style={{ height: '100%' }}
-                name='Myitem'
-                onClick={() => HomeButton('/myitem')}
-                active={path.pathname === '/myitem'}
-              />
-              <Menu.Item style={{ height: '100%' }}
+              {walletName.length !== 0 && <Menu.Item style={{ height: '100%' }}
                 name='Create'
                 onClick={() => HomeButton('/create')}
                 active={path.pathname === '/create'}
-              />
+              />}
               <Menu.Item as='a' style={{ height: '100%' }}>
                 <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
               </Menu.Item>
@@ -137,7 +144,9 @@ export const MyAppBar = (props: any) => {
                   {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
                 </Button>
               </Menu.Item>}
-              <Menu.Item as='a'>
+
+
+              <Menu.Item as='a' onClick={showProfile}>
                 {walletName && walletName.length > 0 &&
                   <div style={{ borderRadius: '50%', border: '1px solid #ffffff38', width: '45px' }}>
                     <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`https://robohash.org/${walletName}.jpeg?set=set1&size=150x150`} />
@@ -260,60 +269,56 @@ export const MyAppBar = (props: any) => {
           </Button>
         </Modal.Actions> */}
       </Modal>
+
+
+      {/* profile */}
+      <Modal
+        style={{ background: 'var(--darg-bg)' }}
+        centered={false}
+        size='mini'
+        dimmer='blurring'
+        open={openProfile}
+        onClose={showProfile}
+      >
+        <Modal.Header style={{ background: 'var(--darg-bg)', borderColor: '#ffffff38' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ borderRadius: '50%', border: '1px solid #ffffff38', width: '45px' }}>
+              <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`https://robohash.org/${walletName}.jpeg?set=set1&size=150x150`} />
+            </div>
+            <span style={{ marginLeft: '8px', color: '#fff' }}>
+              {addressSec(walletName)}
+            </span>
+          </div>
+        </Modal.Header>
+        <Modal.Content style={{ padding: '0', background: 'var(--darg-bg)' }}>
+          <Menu vertical compact fluid={true} inverted >
+            <Menu.Item
+              onClick={() => false}
+              name='Profile'
+            />
+            <Menu.Item
+              onClick={() => {
+                HomeButton('/myitem')
+                showProfile()
+              }}
+              name='My Items'
+            />
+            <Menu.Item
+              onClick={() => false}
+              name='Activity'
+            />
+            <Menu.Item
+              onClick={() => false}
+              name='My Collection'
+            />
+          </Menu>
+        </Modal.Content>
+        <Modal.Actions style={{ background: 'var(--darg-bg)' }}>
+          <Button fluid={true} style={{ margin: '0' }} onClick={logoutWeb}>
+            Disconnect
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </Fragment>
-    // <AppBar position="static">
-    //   <Container maxWidth="xl">
-    //     <Toolbar disableGutters>
-    //       <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}>
-    //         Potato NFT Market
-    //       </Typography>
-
-    //       <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-    //           {
-    //   routes.map((page) => (
-    //     <Link to={`/${page.path}`} key={page.title}>
-    //       <Button sx={{ my: 2, color: 'white', display: 'block' }}>{page.title}</Button>
-    //     </Link>
-    //   ))
-    // }
-    //       </Box>
-    //       <input type="file" onChange={fileInput} />
-    //       <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-    //         {/* <Button
-    //           variant="outlined"
-    //           color="secondary"
-    //           sx={{ my: 2, color: 'white', display: 'block' }}
-    //           onClick={createMarket}
-    //         >
-    //           listing
-    //         </Button> */}
-    //       </Box>
-
-    //       <Box sx={{ flexGrow: 0 }}>
-    //         <Tooltip title="Open settings">
-    //           <IconButton
-    //             sx={{ p: 0 }}
-    //             onClick={() => {
-    //               console.log('process.env.NODE_ENV==>', process.env.NODE_ENV)
-
-    //               if (!isAuthenticated) {
-    //                 authenticate({ signingMessage: 'Log in using Moralis' })
-    //                   .then(function (user) {
-    //                     console.log('logged in user:', user)
-    //                     console.log(user?.get('ethAddress'))
-    //                   })
-    //                   .catch(function (error) {
-    //                     console.log(error)
-    //                   })
-    //               }
-    //             }}
-    //           >
-    //             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-    //           </IconButton>
-    //         </Tooltip>
-    //       </Box>
-    //     </Toolbar>
-    //   </Container>
-    // </AppBar>
   )
 }
