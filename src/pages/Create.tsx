@@ -83,7 +83,7 @@ export const Create = (): JSX.Element => {
           owner: tx.from
         })
 
-        const obj = new Moralis.Object('potatoNFTMarket')
+        const obj = new Moralis.Object(config.dbName)
         obj.set('itemId', itemId)
         obj.set('data', data)
         await obj.save()

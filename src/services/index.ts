@@ -18,7 +18,7 @@ export const loadNFTs = async (market: Record<string, any>, nft: Record<string, 
     items = await Promise.all(
       marketItems.map(async (i) => {
         const tokenUri = await ntfContract?.tokenURI(i.tokenId)
-        const query = new Moralis.Query('potatoNFTMarket')
+        const query = new Moralis.Query(config.dbName)
         query.equalTo('itemId', i.itemId.toNumber())
         const res = await query.find()
         const data = JSON.parse(res[0].get('data'))
@@ -35,7 +35,7 @@ export const loadNFTs = async (market: Record<string, any>, nft: Record<string, 
       })
     )
   } else {
-    const query = new Moralis.Query('potatoNFTMarket')
+    const query = new Moralis.Query(config.dbName)
     const res = await query.find()
     items = res.map((e) => {
       const data = JSON.parse(e.get('data'))
@@ -69,7 +69,7 @@ export async function loadMyNFTs(market: Record<string, any>, nft: Record<string
     marketItems.map(async (i) => {
       const tokenUri = await ntfContract?.tokenURI(i.tokenId)
 
-      const query = new Moralis.Query('potatoNFTMarket')
+      const query = new Moralis.Query(config.dbName)
       query.equalTo('itemId', i.itemId.toNumber())
       const res = await query.find()
       const data = JSON.parse(res[0].get('data'))
