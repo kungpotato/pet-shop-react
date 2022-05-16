@@ -8,13 +8,15 @@ import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
 import { Card, Icon } from 'semantic-ui-react'
 import styled from '@emotion/styled'
+import { useMoralis } from 'react-moralis'
 
 const Image = styled.img`
-display: block;
-width: 100%;
-height: 14em;
-border-radius: inherit;
-object-fit: cover;`
+  display: block;
+  width: 100%;
+  height: 14em;
+  border-radius: inherit;
+  object-fit: cover;
+`
 
 const Header = styled(Card.Header)({
   whiteSpace: 'nowrap',
@@ -41,6 +43,7 @@ interface ICardItem {
 
 export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   const { image, price, description, name, owner } = data
+  const { isAuthenticated } = useMoralis()
 
   const dispatch = useAppDispatch()
   const { potatoMarketContract, NFTContract } = useContractJson()
@@ -61,7 +64,7 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
       })
       await (createMarketSale as any).wait()
       if (isForSale) {
-        loadNFTs(potatoMarketContract, NFTContract).then((data) => {
+        loadNFTs(potatoMarketContract, NFTContract, isAuthenticated).then((data) => {
           dispatch(setNFTs(data))
         })
         loadMyNFTs(potatoMarketContract, NFTContract).then((data) => {
@@ -71,26 +74,22 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
     }
   }
 
-
-
   return (
-    <Card style={{ height: "23em", width: '100%' }}>
+    <Card style={{ height: '23em', width: '100%' }}>
       <Image src={image} />
       <Card.Content>
         <Header>{name}</Header>
-        <Meta >
-          {owner}
-        </Meta>
+        <Meta>{owner}</Meta>
         {/* <Description>
           {description}
         </Description> */}
       </Card.Content>
       <Card.Content extra>
         <a>
-          <Icon name='ethereum' />
-          {ethers.utils.formatUnits(price,'ether').toString()}
+          <Icon name="ethereum" />
+          {price}
         </a>
       </Card.Content>
-    </Card >
+    </Card>
   )
 }

@@ -8,7 +8,6 @@ export const useContractJson = () => {
   useEffect(() => {
     axios('definition/PotatoMarket.json').then((val) => {
       setPotatoMarketContract(val.data)
-      console.log({ json: val.data })
     })
     axios('definition/NFT.json').then((val) => {
       setNFTContract(val.data)

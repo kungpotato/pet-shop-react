@@ -1,9 +1,10 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useMoralis } from 'react-moralis'
 import { Button, Divider, Grid, Icon, Input, Label, Menu, Segment, Sidebar } from 'semantic-ui-react'
 import { CardItem } from '../components/Card'
 import { useContractJson } from '../hooks/contracts'
 import { useScreenSize } from '../hooks/screenSize'
-import { chainChanged, getMetamaskAccount } from '../libs/metamask'
+import { chainChanged } from '../libs/metamask'
 import { loadNFTs } from '../services'
 import { setNFTs } from '../states/expore/reducer'
 import { useAppDispatch, useAppSelector } from '../states/hooks'
@@ -14,10 +15,11 @@ const Expore: React.FC = () => {
   const { potatoMarketContract, NFTContract } = useContractJson()
   const screenWidth = useScreenSize({ maxWidth: 1500 })
   const [showSidebar, setShowSidebar] = useState<boolean>(true)
+  const { isAuthenticated } = useMoralis()
 
   const getNFTsData = useCallback(() => {
     if (potatoMarketContract && NFTContract) {
-      loadNFTs(potatoMarketContract, NFTContract).then((data) => {
+      loadNFTs(potatoMarketContract, NFTContract, isAuthenticated).then((data) => {
         dispatch(setNFTs(data))
       })
     }
