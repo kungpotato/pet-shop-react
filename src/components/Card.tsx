@@ -6,9 +6,10 @@ import { loadMyNFTs, loadNFTs } from '../services'
 import { useAppDispatch } from '../states/hooks'
 import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
-import { Button, Card, Icon, Rating } from 'semantic-ui-react'
+import { Button, Icon, Rating } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 import { useMoralis } from 'react-moralis'
+import { Card, CardHeader, CardContent, CardMeta } from '../@potato/uikit'
 
 const Image = styled.img`
   display: block;
@@ -18,23 +19,7 @@ const Image = styled.img`
   object-fit: cover;
 `
 
-const Header = styled(Card.Header)({
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis'
-})
 
-const Meta = styled(Card.Meta)({
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis'
-})
-
-const Description = styled(Card.Description)({
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis'
-})
 
 const Price = styled.p({
   whiteSpace: 'nowrap',
@@ -83,17 +68,17 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   }
 
   return (
-    <Card style={{ height: '23em', width: '100%' }} onClick={() => false}>
+    <Card darkMode={true} style={{ height: '23em', width: '100%' }} onClick={() => undefined}>
       <Image src={image} loading="lazy" />
-      <Card.Content style={{ height: '1em' }}>
-        <Header>{name}</Header>
-        <Meta>{owner}</Meta>
+      <CardContent style={{ height: '1em' }}>
+        <CardHeader style={{ color: "#fff" }}>{name}</CardHeader>
+        <CardMeta style={{ color: "#f5f5f566" }}>{owner}</CardMeta>
         <Price>
           <Icon name="ethereum" />
           {price}
         </Price>
-      </Card.Content>
-      <Card.Content extra>
+      </CardContent>
+      <CardContent extra>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Button
             color="green"
@@ -108,7 +93,7 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
             <Rating icon="heart" defaultRating={0} maxRating={1} />
           </div>
         </div>
-      </Card.Content>
+      </CardContent>
     </Card>
   )
 }
