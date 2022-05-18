@@ -71,7 +71,7 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
     <Card darkMode={true} style={{ height: '23em', width: '100%' }} onClick={() => undefined}>
       <Image src={image} loading="lazy" />
       <CardContent style={{ height: '1em' }}>
-        <CardHeader style={{ color: "#fff" }}>{name}</CardHeader>
+        <CardHeader darkMode={true}>{name}</CardHeader>
         <CardMeta style={{ color: "#f5f5f566" }}>{owner}</CardMeta>
         <Price>
           <Icon name="ethereum" />

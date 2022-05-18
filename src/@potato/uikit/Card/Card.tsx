@@ -5,15 +5,9 @@ import {
     CardMeta
 } from 'semantic-ui-react'
 
-interface CardComponent extends React.ComponentClass<CardProps> {
-    Content: typeof CardContent
-    Description: typeof CardDescription
-    Group: typeof CardGroup
-    Header: typeof CardHeader
-    Meta: typeof CardMeta
-}
+interface CardComponent { children?: React.ReactNode, darkMode?: boolean, style: any, onClick?: any }
 
-const Card = ({ children, darkMode = false, style, onClick }: { children?: React.ReactNode, darkMode?: boolean, style: any, onClick?: any }) => {
+const Card = ({ children, darkMode = false, style, onClick }: CardComponent) => {
     const darkStyle = darkMode ? { ...style, background: '#303032', border: '0', boxShadow: 'none' } : { ...style }
     return <CustomCard style={darkStyle} onClick={onClick}>
         {children}
