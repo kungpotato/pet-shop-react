@@ -2,6 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "truffle",
+      "request": "launch",
+      "name": "Debug Transaction with Truffle",
+      "stopOnEntry": false,
+      "txHash": "0x26afa2ae6729152616419cc5973e8d8f85bf2bebcddd1ba4490f7b523906caf2",
+      "files": [],
+      "workingDirectory": "${workspaceFolder}/",
+      "providerUrl": "http://127.0.0.1:8545"
+    },
+    {
       "name": "Chrome",
       "type": "chrome",
       "request": "launch",
