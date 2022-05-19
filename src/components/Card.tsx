@@ -6,10 +6,9 @@ import { loadMyNFTs, loadNFTs } from '../services'
 import { useAppDispatch } from '../states/hooks'
 import { config } from '../config'
 import { useContractJson } from '../hooks/contracts'
-import { Button, Icon, Rating } from 'semantic-ui-react'
 import styled from '@emotion/styled'
 import { useMoralis } from 'react-moralis'
-import { Card, CardHeader, CardContent, CardMeta } from '../@potato/uikit'
+import { Card, CardHeader, CardContent, CardMeta, Button, Icon, Rating } from '../@potato/uikit'
 
 const Image = styled.img`
   display: block;
@@ -70,21 +69,22 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   return (
     <Card darkMode={true} style={{ height: '23em', width: '100%' }} onClick={() => undefined}>
       <Image src={image} loading="lazy" />
-      <CardContent style={{ height: '1em' }}>
+      <CardContent style={{ height: '1em' }} >
         <CardHeader darkMode={true}>{name}</CardHeader>
-        <CardMeta style={{ color: "#f5f5f566" }}>{owner}</CardMeta>
+        <CardMeta style={{ color: "#f5f5f566" }}>Takashiro</CardMeta>
+        {/* <CardMeta style={{ color: "#f5f5f566" }}>{owner}</CardMeta> */}
         <Price>
           <Icon name="ethereum" />
           {price}
         </Price>
       </CardContent>
-      <CardContent extra>
+      <CardContent extra border={true}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Button
-            color="green"
+            color="blue"
             size="small"
             onClick={handleClick}
-            style={{ background: '#0000', color: 'green', padding: '0' }}
+            style={{ background: '#0000', color: '#2185D0', padding: '0' }}
           >
             Buy now
           </Button>
