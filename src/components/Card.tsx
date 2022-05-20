@@ -18,8 +18,6 @@ const Image = styled.img`
   object-fit: cover;
 `
 
-
-
 const Price = styled.p({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
@@ -47,7 +45,8 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
         config.marketContractAddress
       )) as unknown as PotatoMarketInstance
       // const ntfContract = (await getEtherContract(NFT)) as unknown as NFTInstance
-      const price = ethers.utils.formatUnits(data.price, 'wei')
+      const price = ethers.utils.parseUnits(data.price, 'ether')
+      console.log(price.toString())
 
       const createMarketSale = await marketContract.createMarketSale(config.nftContractAddress, data.itemId, {
         value: price.toString(),
@@ -69,9 +68,9 @@ export const CardItem = ({ data, isForSale = true }: ICardItem) => {
   return (
     <Card darkMode={true} style={{ height: '23em', width: '100%' }} onClick={() => undefined}>
       <Image src={image} loading="lazy" />
-      <CardContent style={{ height: '1em' }} >
+      <CardContent style={{ height: '1em' }}>
         <CardHeader darkMode={true}>{name}</CardHeader>
-        <CardMeta style={{ color: "#f5f5f566" }}>Takashiro</CardMeta>
+        <CardMeta style={{ color: '#f5f5f566' }}>Takashiro</CardMeta>
         {/* <CardMeta style={{ color: "#f5f5f566" }}>{owner}</CardMeta> */}
         <Price>
           <Icon name="ethereum" />

@@ -19,7 +19,7 @@ contract NFT is ERC721URIStorage {
   event MintedNFT(address indexed minter, string tokenURI, uint256 nftId);
 
   // constructor set up our address
-  constructor(address marketplaceAddress) ERC721('Potato', 'PTT') {
+  constructor(address marketplaceAddress) ERC721('Potato', 'CPAY') {
     require(marketplaceAddress != address(0), 'NFT: invalid market address');
     contractAddress = marketplaceAddress;
   }
