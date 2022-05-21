@@ -75,7 +75,7 @@ export async function loadMyNFTs(market: Record<string, any>, nft: Record<string
       const data = JSON.parse(res[0].get('data'))
 
       const item = {
-        price: i.price.toString(),
+        price: data.price,
         itemId: i.itemId.toNumber(),
         seller: i.seller,
         owner: i.owner,
