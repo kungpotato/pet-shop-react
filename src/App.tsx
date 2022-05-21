@@ -7,6 +7,7 @@ import { AppContainer } from './components/AppContainer'
 import { Create } from './pages/Create'
 import { lazy, Suspense } from 'react'
 import { Progress } from 'semantic-ui-react'
+import { PotatoThemeProvider } from './@potato/uikit/theme'
 
 const Expore = lazy(() => import("./pages/Expore"))
 const MyItem = lazy(() => import("./pages/MyItem"))

@@ -18,7 +18,8 @@ interface IformInput {
     description: string
 }
 
-export const Create = (): JSX.Element => {
+export const Create = (props: any): JSX.Element => {
+    console.log('...>>>', props)
     const { saveFile } = useMoralisFile()
     const { isAuthenticated } = useMoralis()
     const dispatch = useAppDispatch()

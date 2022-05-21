@@ -9,7 +9,7 @@ import { Fragment, useEffect, useState } from 'react'
 // import Tooltip from '@mui/material/Tooltip'
 import { faker } from '@faker-js/faker'
 import { useMoralis, useMoralisFile } from 'react-moralis'
-import { Button, Card, Container, Dimmer, Divider, Dropdown, Feed, Grid, Header, Icon, Image, Input, Label, Menu, Modal, Popup, Segment, Sidebar } from 'semantic-ui-react'
+import { Button, Card, Container, Dimmer, Divider, Dropdown, Feed, Grid, Header, Icon, Image, Input, Label, Modal, Popup, Segment, Sidebar } from 'semantic-ui-react'
 
 import { PotatoMarketInstance, NFTInstance } from '../../types/truffle-contracts'
 import { getEtherContract } from '../libs/ethereum'
@@ -23,17 +23,17 @@ import { useContractJson } from '../hooks/contracts'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import { useScreenSize } from '../hooks/screenSize'
-
+import { Menu } from '../@potato/uikit'
 
 // const client = create({ host: 'localhost', port: 8080, protocol: 'http' })
 
 
-export const MyAppBar = (props: any) => {
+export const MyAppBar = ({ changeTheme, theme }: { changeTheme: any, theme: any }) => {
   const history = useNavigate()
   const path = useLocation()
   const screenWidth = useScreenSize({ maxWidth: 1000 })
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis()
-
+  console.log('app bar', theme)
 
 
   useEffect(() => {
@@ -42,7 +42,9 @@ export const MyAppBar = (props: any) => {
     }
   }, [isAuthenticated, user])
 
-
+  const setTheme = (theme: any) => {
+    changeTheme(theme)
+  }
 
   const [walletName, setWalletName] = useState('')
 
@@ -111,7 +113,7 @@ export const MyAppBar = (props: any) => {
 
   return (
     <Fragment>
-      <Menu inverted={true} size='huge' secondary pointing>
+      <Menu inverted={theme === 'dark'} size='huge' secondary pointing>
         <Container fluid={true} >
           <Menu.Item >
             <img style={{ marginRight: '8px' }} alt="logo" src='/images/potato.gif' />
@@ -135,21 +137,22 @@ export const MyAppBar = (props: any) => {
                 onClick={() => HomeButton('/create')}
                 active={path.pathname === '/create'}
               />}
-              <Menu.Item as='a' style={{ height: '100%' }}>
-                <Popup style={{ background: 'var(--main-background)' }} basic content='Dark Mode' trigger={<Icon name='sun outline' />} />
-              </Menu.Item>
+              {theme === 'light' && <Menu.Item as='a' style={{ height: '100%' }} onClick={() => setTheme('dark')}>
+                <Icon name='moon' />
+              </Menu.Item>}
+              {theme === 'dark' && <Menu.Item as='a' style={{ height: '100%' }} onClick={() => setTheme('light')}>
+                <Icon name='sun outline' />
+              </Menu.Item>}
               {walletName.length === 0 && <Menu.Item as='a'>
                 <Button style={{ display: "flex", alignItems: "center", background: 'var(--main-gradient)', color: '#fff' }} onClick={openConnectWalletModal}>
                   {walletName && walletName.length > 0 && <Icon name='ethereum' />}
                   {walletName && walletName.length > 0 ? addressSec(walletName) : 'Connect Wallet'}
                 </Button>
               </Menu.Item>}
-
-
               <Menu.Item as='a' onClick={showProfile}>
                 {walletName && walletName.length > 0 &&
                   <div style={{ borderRadius: '50%', border: '1px solid #ffffff38', width: '45px' }}>
-                    <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`https://robohash.org/${walletName}.jpeg?set=set1&size=150x150`} />
+                    <CustomImage size='mini' style={{ background: 'var(--main-gradient)', color: '#fff', width: '45px' }} circular avatar spaced='right' src={`/images/potato.gif`} />
                   </div>
                 }
               </Menu.Item>
@@ -164,9 +167,7 @@ export const MyAppBar = (props: any) => {
           </Fragment>}
         </Container>
       </Menu>
-      <Divider inverted style={{ marginBottom: "0" }} />
-
-
+      {theme === 'dark' && <Divider inverted={theme === 'dark'} style={{ marginBottom: "0" }} />}
       <Sidebar
         as={Menu}
         animation='overlay'
